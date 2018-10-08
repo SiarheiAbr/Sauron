@@ -1,0 +1,24 @@
+﻿@model Sauron.Models.GitHubIndexViewModel
+@{
+	ViewBag.Title = "Index";
+	Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Your GitHub Repositories</h2>
+
+<div class="container">
+
+	@Html.AntiForgeryToken()
+	<div id="repoList">
+		@foreach (var repo in Model.UserInfo.Repositories)
+		{
+			using (Html.BeginForm("DownloadRepository", "GitHub", new { repositoryId = repo.Id }))
+			{
+				<div>
+					<label>@repo.Name</label>
+					<button type="submit" class="btn btn-default" id="@repo.Id" name="repo" value="@repo.Id" title="Download @repo.Name repository">Download</button>
+				</div>
+			}
+		}
+	</div>
+</div>
