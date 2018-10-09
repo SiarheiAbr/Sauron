@@ -1,7 +1,9 @@
 ﻿using System.Threading.Tasks;
 using System.Web.Mvc;
-using Sauron.Models;
 using Sauron.Services;
+using Sauron.Services.GitHub;
+using Sauron.Services.Models;
+using Sauron.ViewModels;
 
 namespace Sauron.Controllers
 {

@@ -5,6 +5,15 @@ VisualStudioVersion = 15.0.27703.2042
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sauron", "Sauron\Sauron.csproj", "{904359A8-11F3-41C1-BFDF-6CB996C1B2CC}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sauron.Data", "Sauron.Data\Sauron.Data.csproj", "{0C2CDB56-1A3B-478E-B657-604A2D004D50}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sauron.Services", "Sauron.Services\Sauron.Services.csproj", "{100DB8F0-E8C6-4090-A2BB-619403D1CFC4}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{B03958A2-42C7-462D-AF27-89DF98348064}"
+	ProjectSection(SolutionItems) = preProject
+		Settings.StyleCop = Settings.StyleCop
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -15,6 +24,14 @@ Global
 		{904359A8-11F3-41C1-BFDF-6CB996C1B2CC}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{904359A8-11F3-41C1-BFDF-6CB996C1B2CC}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{904359A8-11F3-41C1-BFDF-6CB996C1B2CC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0C2CDB56-1A3B-478E-B657-604A2D004D50}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0C2CDB56-1A3B-478E-B657-604A2D004D50}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0C2CDB56-1A3B-478E-B657-604A2D004D50}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0C2CDB56-1A3B-478E-B657-604A2D004D50}.Release|Any CPU.Build.0 = Release|Any CPU
+		{100DB8F0-E8C6-4090-A2BB-619403D1CFC4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{100DB8F0-E8C6-4090-A2BB-619403D1CFC4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{100DB8F0-E8C6-4090-A2BB-619403D1CFC4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{100DB8F0-E8C6-4090-A2BB-619403D1CFC4}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

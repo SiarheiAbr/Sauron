@@ -1,21 +1,22 @@
-﻿using System;
-using System.Globalization;
-using System.Linq;
-using System.Security.Claims;
+﻿using System.Linq;
 using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
 using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.Owin;
 using Microsoft.Owin.Security;
-using Sauron.Models;
-using Sauron.Services;
+using Sauron.Identity;
+using Sauron.Services.Identity;
+using Sauron.ViewModels;
 
 namespace Sauron.Controllers
 {
 	[Authorize]
 	public class AccountController : Controller
 	{
+		// Used for XSRF protection when adding external logins
+		private const string XsrfKey = "XsrfId";
+
 		private ApplicationUserManager userManager;
 		private ApplicationSignInManager signInManager;
 		private IAuthenticationManager authenticationManager;
@@ -25,7 +26,8 @@ namespace Sauron.Controllers
 		{
 		}
 
-		public AccountController(ApplicationUserManager userManager,
+		public AccountController(
+			ApplicationUserManager userManager,
 			ApplicationSignInManager signInManager,
 			IAuthenticationManager authenticationManager,
 			IGitHubIdentityProvider gitHubIdentityProvider)
@@ -36,7 +38,6 @@ namespace Sauron.Controllers
 			this.gitHubIdentityProvider = gitHubIdentityProvider;
 		}
 
-		//
 		// GET: /Account/Login
 		[AllowAnonymous]
 		public ActionResult Login(string returnUrl)
@@ -45,7 +46,6 @@ namespace Sauron.Controllers
 			return View();
 		}
 
-		//
 		// POST: /Account/Login
 		[HttpPost]
 		[AllowAnonymous]
@@ -70,12 +70,11 @@ namespace Sauron.Controllers
 					return RedirectToAction("SendCode", new { ReturnUrl = returnUrl, RememberMe = model.RememberMe });
 				case SignInStatus.Failure:
 				default:
-					ModelState.AddModelError("", "Invalid login attempt.");
+					ModelState.AddModelError(string.Empty, "Invalid login attempt.");
 					return View(model);
 			}
 		}
 
-		//
 		// GET: /Account/VerifyCode
 		[AllowAnonymous]
 		public async Task<ActionResult> VerifyCode(string provider, string returnUrl, bool rememberMe)
@@ -85,10 +84,10 @@ namespace Sauron.Controllers
 			{
 				return View("Error");
 			}
+
 			return View(new VerifyCodeViewModel { Provider = provider, ReturnUrl = returnUrl, RememberMe = rememberMe });
 		}
 
-		//
 		// POST: /Account/VerifyCode
 		[HttpPost]
 		[AllowAnonymous]
@@ -113,12 +112,11 @@ namespace Sauron.Controllers
 					return View("Lockout");
 				case SignInStatus.Failure:
 				default:
-					ModelState.AddModelError("", "Invalid code.");
+					ModelState.AddModelError(string.Empty, "Invalid code.");
 					return View(model);
 			}
 		}
 
-		//
 		// GET: /Account/Register
 		[AllowAnonymous]
 		public ActionResult Register()
@@ -126,7 +124,6 @@ namespace Sauron.Controllers
 			return View();
 		}
 
-		//
 		// POST: /Account/Register
 		[HttpPost]
 		[AllowAnonymous]
@@ -137,18 +134,14 @@ namespace Sauron.Controllers
 			{
 				var user = new ApplicationUser { UserName = model.Email, Email = model.Email };
 				var result = await this.userManager.CreateAsync(user, model.Password);
+
 				if (result.Succeeded)
 				{
 					await this.signInManager.SignInAsync(user, isPersistent: false, rememberBrowser: false);
 
-					// For more information on how to enable account confirmation and password reset please visit https://go.microsoft.com/fwlink/?LinkID=320771
-					// Send an email with this link
-					// string code = await UserManager.GenerateEmailConfirmationTokenAsync(user.Id);
-					// var callbackUrl = Url.Action("ConfirmEmail", "Account", new { userId = user.Id, code = code }, protocol: Request.Url.Scheme);
-					// await UserManager.SendEmailAsync(user.Id, "Confirm your account", "Please confirm your account by clicking <a href=\"" + callbackUrl + "\">here</a>");
-
 					return RedirectToAction("Index", "Home");
 				}
+
 				AddErrors(result);
 			}
 
@@ -156,7 +149,6 @@ namespace Sauron.Controllers
 			return View(model);
 		}
 
-		//
 		// GET: /Account/ConfirmEmail
 		[AllowAnonymous]
 		public async Task<ActionResult> ConfirmEmail(string userId, string code)
@@ -165,11 +157,11 @@ namespace Sauron.Controllers
 			{
 				return View("Error");
 			}
+
 			var result = await this.userManager.ConfirmEmailAsync(userId, code);
 			return View(result.Succeeded ? "ConfirmEmail" : "Error");
 		}
 
-		//
 		// GET: /Account/ForgotPassword
 		[AllowAnonymous]
 		public ActionResult ForgotPassword()
@@ -177,7 +169,6 @@ namespace Sauron.Controllers
 			return View();
 		}
 
-		//
 		// POST: /Account/ForgotPassword
 		[HttpPost]
 		[AllowAnonymous]
@@ -205,7 +196,6 @@ namespace Sauron.Controllers
 			return View(model);
 		}
 
-		//
 		// GET: /Account/ForgotPasswordConfirmation
 		[AllowAnonymous]
 		public ActionResult ForgotPasswordConfirmation()
@@ -213,7 +203,6 @@ namespace Sauron.Controllers
 			return View();
 		}
 
-		//
 		// GET: /Account/ResetPassword
 		[AllowAnonymous]
 		public ActionResult ResetPassword(string code)
@@ -221,7 +210,6 @@ namespace Sauron.Controllers
 			return code == null ? View("Error") : View();
 		}
 
-		//
 		// POST: /Account/ResetPassword
 		[HttpPost]
 		[AllowAnonymous]
@@ -232,22 +220,26 @@ namespace Sauron.Controllers
 			{
 				return View(model);
 			}
+
 			var user = await this.userManager.FindByNameAsync(model.Email);
+
 			if (user == null)
 			{
 				// Don't reveal that the user does not exist
 				return RedirectToAction("ResetPasswordConfirmation", "Account");
 			}
+
 			var result = await this.userManager.ResetPasswordAsync(user.Id, model.Code, model.Password);
+
 			if (result.Succeeded)
 			{
 				return RedirectToAction("ResetPasswordConfirmation", "Account");
 			}
+
 			AddErrors(result);
 			return View();
 		}
 
-		//
 		// GET: /Account/ResetPasswordConfirmation
 		[AllowAnonymous]
 		public ActionResult ResetPasswordConfirmation()
@@ -255,7 +247,6 @@ namespace Sauron.Controllers
 			return View();
 		}
 
-		//
 		// POST: /Account/ExternalLogin
 		[HttpPost]
 		[AllowAnonymous]
@@ -266,22 +257,23 @@ namespace Sauron.Controllers
 			return new ChallengeResult(provider, Url.Action("ExternalLoginCallback", "Account", new { ReturnUrl = returnUrl }));
 		}
 
-		//
 		// GET: /Account/SendCode
 		[AllowAnonymous]
 		public async Task<ActionResult> SendCode(string returnUrl, bool rememberMe)
 		{
 			var userId = await this.signInManager.GetVerifiedUserIdAsync();
+
 			if (userId == null)
 			{
 				return View("Error");
 			}
+
 			var userFactors = await this.userManager.GetValidTwoFactorProvidersAsync(userId);
 			var factorOptions = userFactors.Select(purpose => new SelectListItem { Text = purpose, Value = purpose }).ToList();
+
 			return View(new SendCodeViewModel { Providers = factorOptions, ReturnUrl = returnUrl, RememberMe = rememberMe });
 		}
 
-		//
 		// POST: /Account/SendCode
 		[HttpPost]
 		[AllowAnonymous]
@@ -298,10 +290,10 @@ namespace Sauron.Controllers
 			{
 				return View("Error");
 			}
+
 			return RedirectToAction("VerifyCode", new { Provider = model.SelectedProvider, ReturnUrl = model.ReturnUrl, RememberMe = model.RememberMe });
 		}
 
-		//
 		// GET: /Account/ExternalLoginCallback
 		[AllowAnonymous]
 		public async Task<ActionResult> ExternalLoginCallback(string returnUrl)
@@ -332,7 +324,6 @@ namespace Sauron.Controllers
 			}
 		}
 
-		//
 		// POST: /Account/ExternalLoginConfirmation
 		[HttpPost]
 		[AllowAnonymous]
@@ -348,12 +339,15 @@ namespace Sauron.Controllers
 			{
 				// Get the information about the user from the external login provider
 				var info = await this.authenticationManager.GetExternalLoginInfoAsync();
+
 				if (info == null)
 				{
 					return View("ExternalLoginFailure");
 				}
+
 				var user = new ApplicationUser { UserName = model.Email, Email = model.Email };
 				var result = await this.userManager.CreateAsync(user);
+
 				if (result.Succeeded)
 				{
 					result = await this.userManager.AddLoginAsync(user.Id, info.Login);
@@ -363,6 +357,7 @@ namespace Sauron.Controllers
 						return RedirectToLocal(returnUrl);
 					}
 				}
+
 				AddErrors(result);
 			}
 
@@ -370,7 +365,6 @@ namespace Sauron.Controllers
 			return View(model);
 		}
 
-		//
 		// POST: /Account/LogOff
 		[HttpPost]
 		[ValidateAntiForgeryToken]
@@ -380,7 +374,6 @@ namespace Sauron.Controllers
 			return RedirectToAction("Index", "Home");
 		}
 
-		//
 		// GET: /Account/ExternalLoginFailure
 		[AllowAnonymous]
 		public ActionResult ExternalLoginFailure()
@@ -409,14 +402,11 @@ namespace Sauron.Controllers
 		}
 
 		#region Helpers
-		// Used for XSRF protection when adding external logins
-		private const string XsrfKey = "XsrfId";
-
 		private void AddErrors(IdentityResult result)
 		{
 			foreach (var error in result.Errors)
 			{
-				ModelState.AddModelError("", error);
+				ModelState.AddModelError(string.Empty, error);
 			}
 		}
 
@@ -426,6 +416,7 @@ namespace Sauron.Controllers
 			{
 				return Redirect(returnUrl);
 			}
+
 			return RedirectToAction("Index", "Home");
 		}
 
@@ -444,16 +435,20 @@ namespace Sauron.Controllers
 			}
 
 			public string LoginProvider { get; set; }
+
 			public string RedirectUri { get; set; }
+
 			public string UserId { get; set; }
 
 			public override void ExecuteResult(ControllerContext context)
 			{
 				var properties = new AuthenticationProperties { RedirectUri = RedirectUri };
+
 				if (UserId != null)
 				{
 					properties.Dictionary[XsrfKey] = UserId;
 				}
+
 				context.HttpContext.GetOwinContext().Authentication.Challenge(properties, LoginProvider);
 			}
 		}
