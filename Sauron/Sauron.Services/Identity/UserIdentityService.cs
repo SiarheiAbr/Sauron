@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Security.Claims;
 using Microsoft.Owin.Security;
 
@@ -16,6 +18,18 @@ namespace Sauron.Services.Identity
 		public IEnumerable<Claim> GetClaims()
 		{
 			return this.authenticationManager.User.Claims;
+		}
+
+		public string GetUserId()
+		{
+			var userId = this.authenticationManager.User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.NameIdentifier);
+
+			if (userId == null)
+			{
+				throw new UnauthorizedAccessException("You are not authorized.");
+			}
+
+			return userId.Value;
 		}
 	}
 }

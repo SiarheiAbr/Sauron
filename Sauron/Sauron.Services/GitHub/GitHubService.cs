@@ -1,11 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.IO;
+using System.IO.Compression;
 using System.Linq;
 using System.Threading.Tasks;
 using Sauron.Data.DataProviders;
 using Sauron.Services.Identity;
 using Sauron.Services.Models;
+using Sauron.Services.Repository;
 using Sauron.Services.Settings;
 
 namespace Sauron.Services.GitHub
@@ -14,16 +15,16 @@ namespace Sauron.Services.GitHub
 	{
 		private readonly IGitHubIdentityProvider gitHubIdentityProvider;
 		private readonly IGitHubDataProvider gitHubDataProvider;
-		private readonly IServicesConfig config;
+		private readonly IRepositoryService repositoryService;
 
 		public GitHubService(
 			IGitHubIdentityProvider gitHubIdentityProvider,
 			IGitHubDataProvider gitHubDataProvider,
-			IServicesConfig config)
+			IRepositoryService repositoryService)
 		{
 			this.gitHubIdentityProvider = gitHubIdentityProvider;
 			this.gitHubDataProvider = gitHubDataProvider;
-			this.config = config;
+			this.repositoryService = repositoryService;
 		}
 
 		public async Task<IList<RepositoryModel>> GetUserRepositories()
@@ -49,12 +50,7 @@ namespace Sauron.Services.GitHub
 
 			var repoArchive = await this.gitHubDataProvider.DownloadRepository(repositoryId, accessToken);
 
-			var path = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, @"downloads\repo.zip");
-
-			using (FileStream stream = File.Open(path, FileMode.Create, FileAccess.ReadWrite))
-			{
-				await stream.WriteAsync(repoArchive, 0, repoArchive.Length);
-			}
+			await this.repositoryService.SaveRepository(repositoryId, repoArchive);
 		}
 	}
 }
