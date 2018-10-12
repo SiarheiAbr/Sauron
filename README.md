@@ -15,9 +15,9 @@
 
 	f) gacutil /i "C:\Program Files (x86)\Microsoft Visual Studio\2017\Professional\MSBuild\15.0\Bin\Microsoft.Build.Utilities.Core.dll"
 
-	3) Don't use assemblies of v15 from "2" using Nuget Packet - there are some conflicts between versions of dlls in 
+3) Don't use assemblies of v15 from "2" using Nuget Packet - there are some conflicts between versions of dlls in 
 	Visual Studio and in the Nuget Packages(Visual Studio contains older version than last nuget package).
 
-	4) Configure DownloadRepositotyPathTemplate in the Sauron.Services.
+4) Configure DownloadRepositotyPathTemplate in the Sauron.Services.
 
-	5) DON'T REMOVE Microsoft.Build.Locator package from Sauron.Services. Project uses it to find correct MSBuild Path.
+5) DON'T REMOVE Microsoft.Build.Locator package from Sauron.Services. Project uses it to find correct MSBuild Path.
