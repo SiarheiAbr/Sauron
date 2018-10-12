@@ -80,6 +80,24 @@ namespace Sauron.Services.Repository
 			return solutionFiles[0];
 		}
 
+		public string GetProjectFilePath(long repositoryId)
+		{
+			var repositoryFolderPath = this.GetRepositoryFolderPath(repositoryId);
+			var solutionFiles = System.IO.Directory.GetFiles(repositoryFolderPath, "*.csproj", SearchOption.AllDirectories);
+
+			if (solutionFiles.Length <= 0)
+			{
+				throw new FileNotFoundException("There is no project file in repository");
+			}
+
+			if (solutionFiles.Length > 1)
+			{
+				throw new Exception("More than one project files in the repository");
+			}
+
+			return solutionFiles[0];
+		}
+
 		public string GetRepositoryFolderPath(long repositoryId)
 		{
 			return string.Format(this.config.DownloadRepositotyPathTemplate, this.userIdentityService.GetUserId(), repositoryId);

@@ -8,6 +8,8 @@ namespace Sauron.Services.Build
 {
 	public interface IBuildService
 	{
-		Task BuildRepository(long repositoriId);
+		Task BuildRepositorySolution(long repositoriId);
+
+		Task BuildRepositorySingleProject(long repositoriId);
 	}
 }

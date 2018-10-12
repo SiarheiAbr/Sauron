@@ -14,6 +14,8 @@ namespace Sauron.Services.Repository
 
 		string GetSolutionFilePath(long repositoryId);
 
+		string GetProjectFilePath(long repositoryId);
+
 		string GetRepositoryFolderPath(long repositoryId);
 
 		string GetZipRepositoryPath(long repositoryId);

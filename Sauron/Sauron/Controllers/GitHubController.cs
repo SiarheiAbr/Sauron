@@ -46,7 +46,7 @@ namespace Sauron.Controllers
 		{
 			await this.gitHubService.DownloadRepository(repositoryId);
 			await this.repositoryService.ExtractRepository(repositoryId);
-			await this.buildService.BuildRepository(repositoryId);
+			await this.buildService.BuildRepositorySolution(repositoryId);
 		}
 	}
 }
