@@ -3,7 +3,10 @@
   <Profiles />
   <Settings>
     <Setting Name="DownloadRepositotyPathTemplate" Type="System.String" Scope="Application">
-      <Value Profile="(Default)">D:\\DownloadedRepositories\\{0}\\{1}\\</Value>
+      <Value Profile="(Default)">G:\\Projects\\downloadedRepositories\\{0}\\{1}\\</Value>
+    </Setting>
+    <Setting Name="OutputPathTemplate" Type="System.String" Scope="Application">
+      <Value Profile="(Default)">{0}\build\bin\Release</Value>
     </Setting>
   </Settings>
 </SettingsFile>

@@ -8,6 +8,6 @@ namespace Sauron.Services.Models
 
 		public string GitHubAddress { get; set; }
 
-		public IList<RepositoryModel> Repositories { get; set; }
+		public IList<GitHubRepositoryModel> Repositories { get; set; }
 	}
 }

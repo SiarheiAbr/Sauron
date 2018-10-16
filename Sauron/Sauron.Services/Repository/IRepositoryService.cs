@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Sauron.Services.Models;
 
 namespace Sauron.Services.Repository
 {
@@ -12,12 +13,6 @@ namespace Sauron.Services.Repository
 
 		Task SaveRepository(long repositoryId, byte[] archiveData);
 
-		string GetSolutionFilePath(long repositoryId);
-
-		string GetProjectFilePath(long repositoryId);
-
-		string GetRepositoryFolderPath(long repositoryId);
-
-		string GetZipRepositoryPath(long repositoryId);
+		LocalRepositoryModel GetLocalRepositoryInfo(long repositoryId);
 	}
 }

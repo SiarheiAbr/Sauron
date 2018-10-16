@@ -12,7 +12,7 @@ namespace Sauron.Services.Settings {
     
     
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
-    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.VisualStudio.Editors.SettingsDesigner.SettingsSingleFileGenerator", "15.7.0.0")]
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.VisualStudio.Editors.SettingsDesigner.SettingsSingleFileGenerator", "15.8.0.0")]
     internal sealed partial class ServicesSettings : global::System.Configuration.ApplicationSettingsBase {
         
         private static ServicesSettings defaultInstance = ((ServicesSettings)(global::System.Configuration.ApplicationSettingsBase.Synchronized(new ServicesSettings())));
@@ -25,10 +25,19 @@ namespace Sauron.Services.Settings {
         
         [global::System.Configuration.ApplicationScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("D:\\\\DownloadedRepositories\\\\{0}\\\\{1}\\\\")]
+        [global::System.Configuration.DefaultSettingValueAttribute("G:\\\\Projects\\\\downloadedRepositories\\\\{0}\\\\{1}\\\\")]
         public string DownloadRepositotyPathTemplate {
             get {
                 return ((string)(this["DownloadRepositotyPathTemplate"]));
+            }
+        }
+        
+        [global::System.Configuration.ApplicationScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("{0}\\build\\bin\\Release")]
+        public string OutputPathTemplate {
+            get {
+                return ((string)(this["OutputPathTemplate"]));
             }
         }
     }

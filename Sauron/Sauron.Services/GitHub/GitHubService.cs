@@ -27,13 +27,13 @@ namespace Sauron.Services.GitHub
 			this.repositoryService = repositoryService;
 		}
 
-		public async Task<IList<RepositoryModel>> GetUserRepositories()
+		public async Task<IList<GitHubRepositoryModel>> GetUserRepositories()
 		{
 			var accessToken = this.gitHubIdentityProvider.GetAccesToken();
 
 			var repositories = await this.gitHubDataProvider.GetUserRepositories(accessToken);
 
-			var resultList = repositories.Select(x => new RepositoryModel()
+			var resultList = repositories.Select(x => new GitHubRepositoryModel()
 			{
 				Name = x.Name,
 				Url = x.Url,

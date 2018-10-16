@@ -6,7 +6,7 @@ namespace Sauron.Services.GitHub
 {
 	public interface IGitHubService
 	{
-		Task<IList<RepositoryModel>> GetUserRepositories();
+		Task<IList<GitHubRepositoryModel>> GetUserRepositories();
 
 		Task DownloadRepository(long repositoryId);
 	}

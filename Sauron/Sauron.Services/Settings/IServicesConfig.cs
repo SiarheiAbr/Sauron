@@ -9,5 +9,7 @@ namespace Sauron.Services.Settings
 	public interface IServicesConfig
 	{
 		string DownloadRepositotyPathTemplate { get; }
+
+		string OutputPathTemplate { get; }
 	}
 }

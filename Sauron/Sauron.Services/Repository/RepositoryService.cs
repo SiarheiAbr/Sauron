@@ -3,6 +3,7 @@ using System.IO;
 using System.IO.Compression;
 using System.Threading.Tasks;
 using Sauron.Services.Identity;
+using Sauron.Services.Models;
 using Sauron.Services.Settings;
 
 namespace Sauron.Services.Repository
@@ -55,6 +56,10 @@ namespace Sauron.Services.Repository
 			{
 				Directory.CreateDirectory(repositoryFolderPath);
 			}
+			else
+			{
+				this.CleanDirectory(repositoryFolderPath);
+			}
 
 			using (FileStream stream = File.Open(this.GetZipRepositoryPath(repositoryId), FileMode.Create, FileAccess.ReadWrite))
 			{
@@ -62,7 +67,30 @@ namespace Sauron.Services.Repository
 			}
 		}
 
-		public string GetSolutionFilePath(long repositoryId)
+		public LocalRepositoryModel GetLocalRepositoryInfo(long repositoryId)
+		{
+			var solutionFolderPath = this.GetSolutionFolderPath(repositoryId);
+			var outputPath = string.Format(this.config.OutputPathTemplate, solutionFolderPath);
+
+			var localRepositoryInfo = new LocalRepositoryModel()
+			{
+				SolutionFilePath = this.GetSolutionFilePath(repositoryId),
+				ProjectFilePath = this.GetProjectFilePath(repositoryId),
+				RepositoryFolderPath = this.GetRepositoryFolderPath(repositoryId),
+				SolutionFolderPath = solutionFolderPath,
+				OutputPath = outputPath,
+				ProjectDllPath = Path.Combine(outputPath, "SimpleCalc.dll")
+			};
+
+			return localRepositoryInfo;
+		}
+
+		private string GetSolutionFolderPath(long repositoryId)
+		{
+			return Path.GetDirectoryName(this.GetSolutionFilePath(repositoryId));
+		}
+
+		private string GetSolutionFilePath(long repositoryId)
 		{
 			var repositoryFolderPath = this.GetRepositoryFolderPath(repositoryId);
 			var solutionFiles = System.IO.Directory.GetFiles(repositoryFolderPath, "*.sln", SearchOption.AllDirectories);
@@ -80,7 +108,7 @@ namespace Sauron.Services.Repository
 			return solutionFiles[0];
 		}
 
-		public string GetProjectFilePath(long repositoryId)
+		private string GetProjectFilePath(long repositoryId)
 		{
 			var repositoryFolderPath = this.GetRepositoryFolderPath(repositoryId);
 			var solutionFiles = System.IO.Directory.GetFiles(repositoryFolderPath, "*.csproj", SearchOption.AllDirectories);
@@ -98,15 +126,30 @@ namespace Sauron.Services.Repository
 			return solutionFiles[0];
 		}
 
-		public string GetRepositoryFolderPath(long repositoryId)
+		private string GetRepositoryFolderPath(long repositoryId)
 		{
 			return string.Format(this.config.DownloadRepositotyPathTemplate, this.userIdentityService.GetUserId(), repositoryId);
 		}
 
-		public string GetZipRepositoryPath(long repositoryId)
+		private string GetZipRepositoryPath(long repositoryId)
 		{
 			var zipName = $"{repositoryId}.zip";
 			return Path.Combine(this.GetRepositoryFolderPath(repositoryId), zipName);
+		}
+
+		private void CleanDirectory(string directoryPath)
+		{
+			var directoryInfo = new DirectoryInfo(directoryPath);
+
+			foreach (FileInfo file in directoryInfo.EnumerateFiles())
+			{
+				file.Delete();
+			}
+
+			foreach (DirectoryInfo dir in directoryInfo.EnumerateDirectories())
+			{
+				dir.Delete(true);
+			}
 		}
 	}
 }

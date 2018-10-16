@@ -9,6 +9,7 @@ using Sauron.Services.GitHub;
 using Sauron.Services.Identity;
 using Sauron.Services.Repository;
 using Sauron.Services.Settings;
+using Sauron.Services.TestRunner;
 using Unity;
 
 namespace Sauron.Services
@@ -24,6 +25,7 @@ namespace Sauron.Services
 			container.RegisterType<IRepositoryService, RepositoryService>();
 			container.RegisterType<IBuildService, BuildService>();
 			container.RegisterType<IServicesConfig, ServicesConfig>();
+			container.RegisterType<ITestRunnerService, TestRunnerService>();
 		}
 	}
 }

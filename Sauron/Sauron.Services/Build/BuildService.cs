@@ -26,23 +26,22 @@ namespace Sauron.Services.Build
 
 		public async Task BuildRepositorySingleProject(long repositoriId)
 		{
-			var pathToSolutionFile = this.repositoryService.GetSolutionFilePath(repositoriId);
-			var pathToProjectFile = this.repositoryService.GetProjectFilePath(repositoriId);
+			var localRepositoryInfo = this.repositoryService.GetLocalRepositoryInfo(repositoriId);
 
 			string toolsPath = this.GetToolsPath();
-			var globalProperties = this.GetGlobalProperties(pathToProjectFile, toolsPath);
+			var globalProperties = this.GetGlobalProperties(localRepositoryInfo.ProjectFilePath, toolsPath, localRepositoryInfo.OutputPath);
 
 			StringBuilder logBuilder = new StringBuilder();
 			ConsoleLogger logger = new Microsoft.Build.Logging.ConsoleLogger(LoggerVerbosity.Normal, x => logBuilder.Append(x), null, null);
 
-			this.RestoreNugetPackages(pathToSolutionFile);
+			this.RestoreNugetPackages(localRepositoryInfo.SolutionFilePath);
 
 			using (var projectCollection = new ProjectCollection(globalProperties))
 			{
 				projectCollection.AddToolset(new Toolset(ToolLocationHelper.CurrentToolsVersion, toolsPath, projectCollection, toolsPath));
 				this.SetEnvironmentVariables(globalProperties);
 
-				var project = projectCollection.LoadProject(pathToProjectFile);
+				var project = projectCollection.LoadProject(localRepositoryInfo.ProjectFilePath);
 
 				projectCollection.RegisterLogger(logger);
 
@@ -64,14 +63,15 @@ namespace Sauron.Services.Build
 
 		public async Task BuildRepositorySolution(long repositoriId)
 		{
-			var pathToSolutionFile = this.repositoryService.GetSolutionFilePath(repositoriId);
+			var localRepositoryInfo = this.repositoryService.GetLocalRepositoryInfo(repositoriId);
+
 			string toolsPath = this.GetToolsPath();
-			var globalProperties = this.GetGlobalProperties(pathToSolutionFile, toolsPath);
+			var globalProperties = this.GetGlobalProperties(localRepositoryInfo.SolutionFilePath, toolsPath, localRepositoryInfo.OutputPath);
 
 			StringBuilder logBuilder = new StringBuilder();
 			ConsoleLogger logger = new Microsoft.Build.Logging.ConsoleLogger(LoggerVerbosity.Normal, x => logBuilder.Append(x), null, null);
 
-			this.RestoreNugetPackages(pathToSolutionFile);
+			this.RestoreNugetPackages(localRepositoryInfo.SolutionFilePath);
 
 			using (var projectCollection = new ProjectCollection(globalProperties))
 			{
@@ -90,7 +90,7 @@ namespace Sauron.Services.Build
 						}
 					};
 
-					var buildRequest = new BuildRequestData(pathToSolutionFile, globalProperties, null, new string[] { "Build" }, null);
+					var buildRequest = new BuildRequestData(localRepositoryInfo.SolutionFilePath, globalProperties, null, new string[] { "Build" }, null);
 
 					BuildResult buildResult = BuildManager.DefaultBuildManager.Build(bp, buildRequest);
 				}
@@ -106,6 +106,7 @@ namespace Sauron.Services.Build
 
 		private void RestoreNugetPackages(string solutionPath)
 		{
+			// TODO: rewrite to using nuget package - temp solution
 			var nugetPath = Path.GetFullPath(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, @"..\\nuget\\nuget.exe"));
 
 			using (Process process = new Process())
@@ -132,7 +133,7 @@ namespace Sauron.Services.Build
 			Environment.SetEnvironmentVariable("RoslynTargetsPath", globalProperties["RoslynTargetsPath"]);
 		}
 
-		private Dictionary<string, string> GetGlobalProperties(string projectPath, string toolsPath)
+		private Dictionary<string, string> GetGlobalProperties(string projectPath, string toolsPath, string outputPath)
 		{
 			string solutionDir = Path.GetDirectoryName(projectPath);
 			string extensionsPath = Path.GetFullPath(Path.Combine(toolsPath, @"..\..\"));
@@ -147,9 +148,7 @@ namespace Sauron.Services.Build
 				{ "MSBuildFrameworkToolsPath", toolsPath },
 				{ "MSBuildToolsPath32", toolsPath },
 				{ "RoslynTargetsPath", roslynTargetsPath },
-				{ "Configuration", "Release" },
-				{ "Platform", "Any CPU" },
-				{ "OutputPath", string.Concat(solutionDir, @"\build\bin\Release") }
+				{ "OutputPath", outputPath }
 			};
 		}
 

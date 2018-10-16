@@ -5,6 +5,7 @@ using Sauron.Services.Build;
 using Sauron.Services.GitHub;
 using Sauron.Services.Models;
 using Sauron.Services.Repository;
+using Sauron.Services.TestRunner;
 using Sauron.ViewModels;
 
 namespace Sauron.Controllers
@@ -14,15 +15,18 @@ namespace Sauron.Controllers
 		private readonly IGitHubService gitHubService;
 		private readonly IBuildService buildService;
 		private readonly IRepositoryService repositoryService;
+		private readonly ITestRunnerService testRunnerService;
 
 		public GitHubController(
 			IGitHubService gitHubService,
 			IRepositoryService repositoryService,
-			IBuildService buildService)
+			IBuildService buildService,
+			ITestRunnerService testRunnerService)
 		{
 			this.gitHubService = gitHubService;
 			this.repositoryService = repositoryService;
 			this.buildService = buildService;
+			this.testRunnerService = testRunnerService;
 		}
 
 		// GET
@@ -47,6 +51,7 @@ namespace Sauron.Controllers
 			await this.gitHubService.DownloadRepository(repositoryId);
 			await this.repositoryService.ExtractRepository(repositoryId);
 			await this.buildService.BuildRepositorySolution(repositoryId);
+			await this.testRunnerService.RunUnitTests(repositoryId);
 		}
 	}
 }
