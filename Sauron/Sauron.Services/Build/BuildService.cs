@@ -107,7 +107,7 @@ namespace Sauron.Services.Build
 		private void RestoreNugetPackages(string solutionPath)
 		{
 			// TODO: rewrite to using nuget package - temp solution
-			var nugetPath = Path.GetFullPath(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, @"..\\nuget\\nuget.exe"));
+			var nugetPath = Path.GetFullPath(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, @"nuget\\nuget.exe"));
 
 			using (Process process = new Process())
 			{

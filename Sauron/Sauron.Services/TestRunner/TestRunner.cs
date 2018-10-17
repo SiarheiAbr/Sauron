@@ -25,7 +25,7 @@ namespace Sauron.Services.TestRunner
 			using (ITestRunner runner = engine.GetRunner(package))
 			{
 				result = runner.Run(this, emptyFilter);
-				results.Results = result.InnerXml;
+				results.Results = result.OuterXml;
 			}
 
 			return results;

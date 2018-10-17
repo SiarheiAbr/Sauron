@@ -38,6 +38,8 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <RunCodeAnalysis>true</RunCodeAnalysis>
+    <FilesToIncludeForPublish>OnlyFilesToRunTheApp</FilesToIncludeForPublish>
+    <ExcludeGeneratedDebugSymbol>false</ExcludeGeneratedDebugSymbol>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -626,6 +628,15 @@ xcopy /S /Y "$(SolutionDir)nuget\*.*" "$(TargetDir)\..\nuget\"</PostBuildEvent>
   <PropertyGroup>
     <PreBuildEvent>rd /s /q "$(TargetDir)"</PreBuildEvent>
   </PropertyGroup>
+
+	<Target Name="CopyBinFilesToTempPackage" AfterTargets="CopyAllFilesToSingleFolderForPackage" BeforeTargets="MSDeployPublish">
+		<ItemGroup>
+			<BuildResultFiles Include="$(TargetDir)**\*.*"/>
+		</ItemGroup>
+		<Message Text="Deploy | Copying third party assemblies to output folder ($(_PackageTempDir)\bin\)" Importance="high" />
+		<Copy DestinationFolder="$(_PackageTempDir)\bin\" SourceFiles="@(BuildResultFiles)" SkipUnchangedFiles="true" />
+	</Target>
+
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it.
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">
