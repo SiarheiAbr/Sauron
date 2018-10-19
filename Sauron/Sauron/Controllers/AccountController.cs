@@ -5,8 +5,8 @@ using System.Web.Mvc;
 using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.Owin;
 using Microsoft.Owin.Security;
-using Sauron.Identity;
-using Sauron.Services.Identity;
+using Sauron.Identity.Models;
+using Sauron.Identity.Services;
 using Sauron.ViewModels;
 
 namespace Sauron.Controllers
@@ -17,25 +17,18 @@ namespace Sauron.Controllers
 		// Used for XSRF protection when adding external logins
 		private const string XsrfKey = "XsrfId";
 
-		private ApplicationUserManager userManager;
-		private ApplicationSignInManager signInManager;
-		private IAuthenticationManager authenticationManager;
-		private IGitHubIdentityProvider gitHubIdentityProvider;
-
-		public AccountController()
-		{
-		}
+		private readonly IAuthenticationManager authenticationManager;
+		private readonly IGitHubIdentityService gitHubIdentityService;
+		private readonly IApplicationUserService userService;
 
 		public AccountController(
-			ApplicationUserManager userManager,
-			ApplicationSignInManager signInManager,
 			IAuthenticationManager authenticationManager,
-			IGitHubIdentityProvider gitHubIdentityProvider)
+			IGitHubIdentityService gitHubIdentityService,
+			IApplicationUserService userService)
 		{
-			this.userManager = userManager;
-			this.signInManager = signInManager;
 			this.authenticationManager = authenticationManager;
-			this.gitHubIdentityProvider = gitHubIdentityProvider;
+			this.gitHubIdentityService = gitHubIdentityService;
+			this.userService = userService;
 		}
 
 		// GET: /Account/Login
@@ -59,7 +52,7 @@ namespace Sauron.Controllers
 
 			// This doesn't count login failures towards account lockout
 			// To enable password failures to trigger account lockout, change to shouldLockout: true
-			var result = await this.signInManager.PasswordSignInAsync(model.Email, model.Password, model.RememberMe, shouldLockout: false);
+			var result = await this.userService.PasswordSignInAsync(model.Email, model.Password, model.RememberMe, shouldLockout: false);
 			switch (result)
 			{
 				case SignInStatus.Success:
@@ -80,7 +73,7 @@ namespace Sauron.Controllers
 		public async Task<ActionResult> VerifyCode(string provider, string returnUrl, bool rememberMe)
 		{
 			// Require that the user has already logged in via username/password or external login
-			if (!await this.signInManager.HasBeenVerifiedAsync())
+			if (!await this.userService.HasBeenVerifiedAsync())
 			{
 				return View("Error");
 			}
@@ -103,7 +96,7 @@ namespace Sauron.Controllers
 			// If a user enters incorrect codes for a specified amount of time then the user account 
 			// will be locked out for a specified amount of time. 
 			// You can configure the account lockout settings in IdentityConfig
-			var result = await this.signInManager.TwoFactorSignInAsync(model.Provider, model.Code, isPersistent: model.RememberMe, rememberBrowser: model.RememberBrowser);
+			var result = await this.userService.TwoFactorSignInAsync(model.Provider, model.Code, isPersistent: model.RememberMe, rememberBrowser: model.RememberBrowser);
 			switch (result)
 			{
 				case SignInStatus.Success:
@@ -132,13 +125,12 @@ namespace Sauron.Controllers
 		{
 			if (ModelState.IsValid)
 			{
-				var user = new ApplicationUser { UserName = model.Email, Email = model.Email };
-				var result = await this.userManager.CreateAsync(user, model.Password);
+				var registerModel = new RegisterModel() { UserName = model.Email, Email = model.Email, Password = model.Password };
+
+				var result = await this.userService.Register(registerModel);
 
 				if (result.Succeeded)
 				{
-					await this.signInManager.SignInAsync(user, isPersistent: false, rememberBrowser: false);
-
 					return RedirectToAction("Index", "Home");
 				}
 
@@ -158,7 +150,7 @@ namespace Sauron.Controllers
 				return View("Error");
 			}
 
-			var result = await this.userManager.ConfirmEmailAsync(userId, code);
+			var result = await this.userService.ConfirmEmailAsync(userId, code);
 			return View(result.Succeeded ? "ConfirmEmail" : "Error");
 		}
 
@@ -177,8 +169,9 @@ namespace Sauron.Controllers
 		{
 			if (ModelState.IsValid)
 			{
-				var user = await this.userManager.FindByNameAsync(model.Email);
-				if (user == null || !(await this.userManager.IsEmailConfirmedAsync(user.Id)))
+				var user = await this.userService.FindByNameAsync(model.Email);
+
+				if (user == null || !(await this.userService.IsEmailConfirmedAsync(user.Id)))
 				{
 					// Don't reveal that the user does not exist or is not confirmed
 					return View("ForgotPasswordConfirmation");
@@ -221,7 +214,7 @@ namespace Sauron.Controllers
 				return View(model);
 			}
 
-			var user = await this.userManager.FindByNameAsync(model.Email);
+			var user = await this.userService.FindByNameAsync(model.Email);
 
 			if (user == null)
 			{
@@ -229,7 +222,7 @@ namespace Sauron.Controllers
 				return RedirectToAction("ResetPasswordConfirmation", "Account");
 			}
 
-			var result = await this.userManager.ResetPasswordAsync(user.Id, model.Code, model.Password);
+			var result = await this.userService.ResetPasswordAsync(user.Id, model.Code, model.Password);
 
 			if (result.Succeeded)
 			{
@@ -261,14 +254,15 @@ namespace Sauron.Controllers
 		[AllowAnonymous]
 		public async Task<ActionResult> SendCode(string returnUrl, bool rememberMe)
 		{
-			var userId = await this.signInManager.GetVerifiedUserIdAsync();
+			var userId = await this.userService.GetVerifiedUserIdAsync();
 
 			if (userId == null)
 			{
 				return View("Error");
 			}
 
-			var userFactors = await this.userManager.GetValidTwoFactorProvidersAsync(userId);
+			var userFactors = await userService.GetValidTwoFactorProvidersAsync(userId);
+
 			var factorOptions = userFactors.Select(purpose => new SelectListItem { Text = purpose, Value = purpose }).ToList();
 
 			return View(new SendCodeViewModel { Providers = factorOptions, ReturnUrl = returnUrl, RememberMe = rememberMe });
@@ -286,7 +280,7 @@ namespace Sauron.Controllers
 			}
 
 			// Generate the token and send it
-			if (!await this.signInManager.SendTwoFactorCodeAsync(model.SelectedProvider))
+			if (!await this.userService.SendTwoFactorCodeAsync(model.SelectedProvider))
 			{
 				return View("Error");
 			}
@@ -305,11 +299,11 @@ namespace Sauron.Controllers
 			}
 
 			// Sign in the user with this external login provider if the user already has a login
-			var result = await this.signInManager.ExternalSignInAsync(loginInfo, isPersistent: false);
+			var result = await this.userService.ExternalSignInAsync(loginInfo, false);
 			switch (result)
 			{
 				case SignInStatus.Success:
-					this.authenticationManager.AuthenticationResponseGrant.Identity.AddClaim(this.gitHubIdentityProvider.GetAccessTokenClaim(loginInfo.ExternalIdentity.Claims));
+					this.authenticationManager.AuthenticationResponseGrant.Identity.AddClaim(this.gitHubIdentityService.GetAccessTokenClaim(loginInfo.ExternalIdentity.Claims));
 					return RedirectToLocal(returnUrl);
 				case SignInStatus.LockedOut:
 					return View("Lockout");
@@ -345,17 +339,11 @@ namespace Sauron.Controllers
 					return View("ExternalLoginFailure");
 				}
 
-				var user = new ApplicationUser { UserName = model.Email, Email = model.Email };
-				var result = await this.userManager.CreateAsync(user);
+				var result = await this.userService.AddExternalLoginAsync(model.Email, info);
 
 				if (result.Succeeded)
 				{
-					result = await this.userManager.AddLoginAsync(user.Id, info.Login);
-					if (result.Succeeded)
-					{
-						await this.signInManager.SignInAsync(user, isPersistent: false, rememberBrowser: false);
-						return RedirectToLocal(returnUrl);
-					}
+					return RedirectToLocal(returnUrl);
 				}
 
 				AddErrors(result);
@@ -379,26 +367,6 @@ namespace Sauron.Controllers
 		public ActionResult ExternalLoginFailure()
 		{
 			return View();
-		}
-
-		protected override void Dispose(bool disposing)
-		{
-			if (disposing)
-			{
-				if (this.userManager != null)
-				{
-					this.userManager.Dispose();
-					this.userManager = null;
-				}
-
-				if (this.signInManager != null)
-				{
-					this.signInManager.Dispose();
-					this.signInManager = null;
-				}
-			}
-
-			base.Dispose(disposing);
 		}
 
 		#region Helpers

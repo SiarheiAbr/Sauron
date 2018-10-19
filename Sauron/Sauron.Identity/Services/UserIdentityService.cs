@@ -4,7 +4,7 @@ using System.Linq;
 using System.Security.Claims;
 using Microsoft.Owin.Security;
 
-namespace Sauron.Services.Identity
+namespace Sauron.Identity.Services
 {
 	public class UserIdentityService : IUserIdentityService
 	{

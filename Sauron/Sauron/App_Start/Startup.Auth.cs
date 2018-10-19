@@ -10,7 +10,9 @@ using Microsoft.Owin.Security.DataProtection;
 using Owin;
 using Owin.Security.Providers.GitHub;
 using Sauron.Identity;
-using Sauron.Services.Identity;
+using Sauron.Identity.Helpers;
+using Sauron.Identity.Managers;
+using Sauron.Identity.Services;
 using Unity;
 
 namespace Sauron
@@ -38,9 +40,7 @@ namespace Sauron
 					// Enables the application to validate the security stamp when the user logs in.
 
 					// This is a security feature which is used when you change a password or add an external login to your account.
-					OnValidateIdentity = SecurityStampValidator.OnValidateIdentity<ApplicationUserManager, ApplicationUser>(
-						validateInterval: TimeSpan.FromMinutes(30),
-						regenerateIdentity: (manager, user) => user.GenerateUserIdentityAsync(manager))
+					OnValidateIdentity = RegenerateIdentityHelper.OnValidateIdentity()
 				}
 			});
 			app.UseExternalSignInCookie(DefaultAuthenticationTypes.ExternalCookie);
@@ -54,7 +54,7 @@ namespace Sauron
 				{
 					OnAuthenticated = (context) =>
 					{
-						var accessTokenClaim = new Claim(GitHubIdentityProvider.GitHubAccessTokenClaimType, context.AccessToken, ClaimValueTypes.String, "GitHub");
+						var accessTokenClaim = new Claim(GitHubIdentityService.GitHubAccessTokenClaimType, context.AccessToken, ClaimValueTypes.String, "GitHub");
 						context.Identity.AddClaim(accessTokenClaim);
 						return Task.FromResult<object>(null);
 					}

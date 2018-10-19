@@ -1,14 +1,9 @@
 using System;
-using System.Data.Entity;
 using System.Web;
-using Microsoft.AspNet.Identity;
-using Microsoft.AspNet.Identity.EntityFramework;
 using Microsoft.Owin.Security;
-using Sauron.Db;
-using Sauron.Identity;
 using Unity;
+using Unity.AspNet.Mvc;
 using Unity.Injection;
-using Unity.Lifetime;
 
 namespace Sauron
 {
@@ -19,12 +14,12 @@ namespace Sauron
 	{
 		#region Unity Container
 		private static Lazy<IUnityContainer> container =
-		  new Lazy<IUnityContainer>(() =>
-		  {
-			  var container = new UnityContainer();
-			  RegisterTypes(container);
-			  return container;
-		  });
+			new Lazy<IUnityContainer>(() =>
+			{
+				var container = new UnityContainer();
+				RegisterTypes(container);
+				return container;
+			});
 
 		/// <summary>
 		/// Configured Unity Container.
@@ -44,20 +39,10 @@ namespace Sauron
 		/// </remarks>
 		public static void RegisterTypes(IUnityContainer container)
 		{
-			container.RegisterType<DbContext, ApplicationDbContext>(new HierarchicalLifetimeManager());
-			container.RegisterType(typeof(IUserStore<ApplicationUser>), typeof(UserStore<ApplicationUser>));
-			container.RegisterType<IdentityUser, ApplicationUser>(new ContainerControlledLifetimeManager());
+			Sauron.Services.UnityConfig.RegisterTypes(container, () => new PerRequestLifetimeManager());
+			Sauron.Identity.UnityConfig.RegisterTypes(container, () => new PerRequestLifetimeManager());
 
-			container.RegisterType<ApplicationSignInManager>();
-			container.RegisterType<ApplicationUserManager>();
 			container.RegisterType<IAuthenticationManager>(new InjectionFactory(c => HttpContext.Current.GetOwinContext().Authentication));
-
-			RegisterServicesDependencies(container);
-		}
-
-		private static void RegisterServicesDependencies(IUnityContainer container)
-		{
-			Sauron.Services.UnityConfig.RegisterTypes(container);
 		}
 	}
 }

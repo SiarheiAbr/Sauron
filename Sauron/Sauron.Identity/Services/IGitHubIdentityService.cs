@@ -1,9 +1,9 @@
 ﻿using System.Collections.Generic;
 using System.Security.Claims;
 
-namespace Sauron.Services.Identity
+namespace Sauron.Identity.Services
 {
-	public interface IGitHubIdentityProvider
+	public interface IGitHubIdentityService
 	{
 		Claim GetAccessTokenClaim(IEnumerable<Claim> claims = null);
 

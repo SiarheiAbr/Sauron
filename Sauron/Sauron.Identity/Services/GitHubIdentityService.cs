@@ -2,13 +2,13 @@
 using System.Linq;
 using System.Security.Claims;
 
-namespace Sauron.Services.Identity
+namespace Sauron.Identity.Services
 {
-	public class GitHubIdentityProvider : IGitHubIdentityProvider
+	public class GitHubIdentityService : IGitHubIdentityService
 	{
 		private readonly IUserIdentityService userIdentityService;
 
-		public GitHubIdentityProvider(IUserIdentityService userIdentityService)
+		public GitHubIdentityService(IUserIdentityService userIdentityService)
 		{
 			this.userIdentityService = userIdentityService;
 		}

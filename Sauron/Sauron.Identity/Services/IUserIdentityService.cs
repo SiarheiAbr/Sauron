@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Security.Claims;
 
-namespace Sauron.Services.Identity
+namespace Sauron.Identity.Services
 {
 	public interface IUserIdentityService
 	{
