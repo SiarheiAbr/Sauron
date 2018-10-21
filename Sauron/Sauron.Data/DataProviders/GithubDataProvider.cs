@@ -9,7 +9,7 @@ namespace Sauron.Data.DataProviders
 {
 	public class GitHubDataProvider : IGitHubDataProvider
 	{
-		public async Task<IReadOnlyList<RepositoryEntity>> GetUserRepositories(string accessToken)
+		public async Task<IReadOnlyList<GitHubRepositoryEntity>> GetUserRepositories(string accessToken)
 		{
 			var client = this.GetCLient(accessToken);
 
@@ -18,7 +18,7 @@ namespace Sauron.Data.DataProviders
 				Type = RepositoryType.Owner
 			});
 
-			return repositories.Select(x => new RepositoryEntity()
+			return repositories.Select(x => new GitHubRepositoryEntity()
 			{
 				Name = x.Name,
 				Url = x.Url,

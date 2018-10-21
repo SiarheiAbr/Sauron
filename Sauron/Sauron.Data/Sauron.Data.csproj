@@ -107,8 +107,12 @@
     <Compile Include="DataProviders\GithubDataProvider.cs" />
     <Compile Include="DataProviders\IGithubDataProvider.cs" />
     <Compile Include="Db\ApplicationDbContext.cs" />
-    <Compile Include="Entities\RepositoryEntity.cs" />
+    <Compile Include="Db\SauronDbInitializer.cs" />
+    <Compile Include="Entities\GitHubRepositoryEntity.cs" />
+    <Compile Include="Entities\HomeWorkEntity.cs" />
+    <Compile Include="Entities\TaskEntity.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Repositoties\ITaskRepository.cs" />
     <Compile Include="UnityConfig.cs" />
   </ItemGroup>
   <ItemGroup>

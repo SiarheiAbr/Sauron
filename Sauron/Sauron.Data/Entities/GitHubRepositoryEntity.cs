@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Sauron.Data.Entities
 {
-	public class RepositoryEntity
+	public class GitHubRepositoryEntity
 	{
 		public string Name { get; set; }
 

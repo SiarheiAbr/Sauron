@@ -23,6 +23,7 @@ namespace Sauron.Controllers
 			IApplicationUserService userService,
 			IAuthenticationManager authenticationManager)
 		{
+			this.userService = userService;
 			this.authenticationManager = authenticationManager;
 		}
 

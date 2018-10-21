@@ -7,7 +7,7 @@ namespace Sauron.Data.DataProviders
 {
 	public interface IGitHubDataProvider
 	{
-		Task<IReadOnlyList<RepositoryEntity>> GetUserRepositories(string accessToken);
+		Task<IReadOnlyList<GitHubRepositoryEntity>> GetUserRepositories(string accessToken);
 
 		Task<byte[]> DownloadRepository(long repositoryId, string accessToken);
 	}
