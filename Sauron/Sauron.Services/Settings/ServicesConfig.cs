@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -8,8 +9,10 @@ namespace Sauron.Services.Settings
 {
 	public class ServicesConfig : IServicesConfig
 	{
-		public string DownloadRepositotyPathTemplate => ServicesSettings.Default.DownloadRepositotyPathTemplate;
+		public string DownloadRepositoryPathTemplate => ConfigurationManager.AppSettings["DownloadRepositoryPathTemplate"];
 
-		public string OutputPathTemplate => ServicesSettings.Default.OutputPathTemplate;
+		public string OutputPathTemplate => ConfigurationManager.AppSettings["OutputPathTemplate"];
+
+		public string TempTestReportsPathTemplate => ConfigurationManager.AppSettings["TempTestReportsPathTemplate"];
 	}
 }

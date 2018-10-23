@@ -1,0 +1,58 @@
+﻿@using Microsoft.AspNet.Identity
+@model Sauron.ViewModels.HomeWorkIndexViewModel
+
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Submitted Home&nbsp;Works</h2>
+
+<table class="table">
+	<thead>
+	<tr>
+		<th scope="col">Task&nbsp;Id</th>
+		<th scope="col">Task&nbsp;Name</th>
+		<th scope="col">Build</th>
+		<th scope="col">Tests&nbsp;Results</th>
+	</tr>
+	</thead>
+	<tbody>
+	@foreach (var homeWork in Model.HomeWorks)
+	{
+		<tr>
+			<td>
+				<p>@homeWork.TaskId</p>
+			</td>
+			<td>
+				<p>@homeWork.TaskName</p>
+			</td>
+			<td>
+				@if (homeWork.IsBuildSuccessful)
+				{
+					<p>Successful</p>
+				}
+				else
+				{
+					<p>Failed</p>
+				}
+			</td>
+			<td>
+				@if (homeWork.IsBuildSuccessful)
+				{
+					@Html.ActionLink("View Report", "ViewTestReportResults",
+						new
+						{
+							userId = User.Identity.GetUserId(),
+							homeWorkId = @homeWork.Id
+						}, new { @class = "btn btn-outline-secondary", target = "_blank" })
+				}
+				else
+				{
+					<p>Not started due to failed build</p>
+				}
+			</td>
+		</tr>
+	}
+	</tbody>
+</table>

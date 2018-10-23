@@ -8,8 +8,10 @@ namespace Sauron.Services.Settings
 {
 	public interface IServicesConfig
 	{
-		string DownloadRepositotyPathTemplate { get; }
+		string DownloadRepositoryPathTemplate { get; }
 
 		string OutputPathTemplate { get; }
+
+		string TempTestReportsPathTemplate { get; }
 	}
 }

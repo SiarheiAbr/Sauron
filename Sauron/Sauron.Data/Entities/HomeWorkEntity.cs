@@ -25,6 +25,7 @@ namespace Sauron.Data.Entities
 
 		public string UserId { get; set; }
 
+		[Column(TypeName = "xml")]
 		public string TestsResults { get; set; }
 
 		public bool IsBuildSuccessful { get; set; }

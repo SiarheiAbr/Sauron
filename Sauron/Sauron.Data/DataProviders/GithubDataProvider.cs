@@ -42,9 +42,9 @@ namespace Sauron.Data.DataProviders
 		#region private methods
 		private GitHubClient GetCLient(string accessToken)
 		{
-			var credentials = new Credentials(accessToken);
+			var credentials = new Octokit.Credentials(accessToken);
 
-			var client = new GitHubClient(new ProductHeaderValue("Sauron"))
+			var client = new Octokit.GitHubClient(new ProductHeaderValue("Sauron"))
 			{
 				Credentials = credentials
 			};

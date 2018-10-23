@@ -160,40 +160,40 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Build\BuildService.cs" />
-    <Compile Include="Build\IBuildService.cs" />
-    <Compile Include="GitHub\GitHubService.cs" />
-    <Compile Include="GitHub\IGitHubService.cs" />
+    <Compile Include="DataServices\HomeWorksService.cs" />
+    <Compile Include="DataServices\IHomeWorksService.cs" />
+    <Compile Include="Helpers\DirectoryHelper.cs" />
+    <Compile Include="Processing\BuildService.cs" />
+    <Compile Include="Processing\IBuildService.cs" />
+    <Compile Include="DataServices\GitHubService.cs" />
+    <Compile Include="DataServices\IGitHubService.cs" />
+    <Compile Include="DataServices\ITasksService.cs" />
+    <Compile Include="DataServices\TasksService.cs" />
     <Compile Include="Models\GithubUserInfoModel.cs" />
     <Compile Include="Models\GitHubRepositoryModel.cs" />
+    <Compile Include="Models\HomeWorkModel.cs" />
     <Compile Include="Models\LocalRepositoryModel.cs" />
+    <Compile Include="Models\TaskModel.cs" />
+    <Compile Include="Processing\IProcessingService.cs" />
+    <Compile Include="Processing\ProcessingService.cs" />
+    <Compile Include="Processing\ITestReportService.cs" />
+    <Compile Include="Processing\TestReportService.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Repository\IRepositoryService.cs" />
-    <Compile Include="Repository\RepositoryService.cs" />
+    <Compile Include="Processing\IRepositoryService.cs" />
+    <Compile Include="Processing\RepositoryService.cs" />
     <Compile Include="Settings\IServicesConfig.cs" />
     <Compile Include="Settings\ServicesConfig.cs" />
-    <Compile Include="Settings\ServicesSettings.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTimeSharedInput>True</DesignTimeSharedInput>
-      <DependentUpon>ServicesSettings.settings</DependentUpon>
-    </Compile>
-    <Compile Include="TestRunner\IsolatedWorkExecutor.cs" />
-    <Compile Include="TestRunner\ITestRunnerService.cs" />
-    <Compile Include="TestRunner\TestResults.cs" />
-    <Compile Include="TestRunner\TestRunner.cs" />
-    <Compile Include="TestRunner\TestRunnerService.cs" />
+    <Compile Include="Processing\TestRunner\IsolatedWorkExecutor.cs" />
+    <Compile Include="Processing\TestRunner\ITestRunnerService.cs" />
+    <Compile Include="Processing\TestRunner\TestResults.cs" />
+    <Compile Include="Processing\TestRunner\TestRunner.cs" />
+    <Compile Include="Processing\TestRunner\TestRunnerService.cs" />
     <Compile Include="UnityConfig.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="app.config">
-      <SubType>Designer</SubType>
-    </None>
+    <None Include="app.config" />
     <None Include="packages.config" />
     <None Include="Settings.StyleCop" />
-    <None Include="Settings\ServicesSettings.settings">
-      <Generator>SettingsSingleFileGenerator</Generator>
-      <LastGenOutput>ServicesSettings.Designer.cs</LastGenOutput>
-    </None>
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Sauron.Data\Sauron.Data.csproj">

@@ -47,8 +47,8 @@ namespace Sauron
 
 			GitHubAuthenticationOptions gitHubAuthenticationOptions = new GitHubAuthenticationOptions()
 			{
-				ClientId = "58a25e28044a178787a0",
-				ClientSecret = "9673d03cb89c938095134702c09b0a5c074d30d6",
+				ClientId = "d434a053d003d2ca0159",
+				ClientSecret = "42ffb06bdcf0944281e798ca92be66e6a40a5606",
 
 				Provider = new GitHubAuthenticationProvider()
 				{

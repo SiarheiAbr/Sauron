@@ -1,0 +1,14 @@
+﻿@model IEnumerable<Sauron.ViewModels.GitHubRepositoryViewModel>
+
+@using (Html.BeginForm("DownloadRepository", "Processing", new { taskId = ViewData["taskId"] }, FormMethod.Post, new { @class = "form-inline", role = "form" }))
+{
+	<div class="form-group mx-sm-3 mb-2">
+		<select class="form-control" id="repositoryId" name="repositoryId">
+			@foreach (var repo in Model)
+			{
+				<option value="@repo.Id">@repo.Name</option>
+			}
+		</select>
+	</div>
+	<button type="submit" class="btn btn-outline-secondary mb-2">Submit</button>
+}

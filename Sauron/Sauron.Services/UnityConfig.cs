@@ -1,9 +1,8 @@
 ﻿using System;
-using Sauron.Services.Build;
-using Sauron.Services.GitHub;
-using Sauron.Services.Repository;
+using Sauron.Services.DataServices;
+using Sauron.Services.Processing;
+using Sauron.Services.Processing.TestRunner;
 using Sauron.Services.Settings;
-using Sauron.Services.TestRunner;
 using Unity;
 using Unity.Lifetime;
 
@@ -18,6 +17,10 @@ namespace Sauron.Services
 			container.RegisterType<IBuildService, BuildService>(lifetimeManagerCreator());
 			container.RegisterType<IServicesConfig, ServicesConfig>(lifetimeManagerCreator());
 			container.RegisterType<ITestRunnerService, TestRunnerService>(lifetimeManagerCreator());
+			container.RegisterType<ITasksService, TasksService>(lifetimeManagerCreator());
+			container.RegisterType<IHomeWorksService, HomeWorksService>(lifetimeManagerCreator());
+			container.RegisterType<IProcessingService, ProcessingService>(lifetimeManagerCreator());
+			container.RegisterType<ITestReportService, TestReportService>(lifetimeManagerCreator());
 			Sauron.Data.UnityConfig.RegisterTypes(container, lifetimeManagerCreator);
 		}
 	}
