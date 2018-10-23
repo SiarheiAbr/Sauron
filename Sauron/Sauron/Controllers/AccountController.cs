@@ -343,6 +343,7 @@ namespace Sauron.Controllers
 
 				if (result.Succeeded)
 				{
+					this.authenticationManager.AuthenticationResponseGrant.Identity.AddClaim(this.gitHubIdentityService.GetAccessTokenClaim(info.ExternalIdentity.Claims));
 					return RedirectToLocal(returnUrl);
 				}
 

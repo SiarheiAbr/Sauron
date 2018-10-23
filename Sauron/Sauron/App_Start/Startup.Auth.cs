@@ -5,6 +5,7 @@ using System.Web.Mvc;
 using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.Owin;
 using Microsoft.Owin;
+using Microsoft.Owin.Security;
 using Microsoft.Owin.Security.Cookies;
 using Microsoft.Owin.Security.DataProtection;
 using Owin;
@@ -47,8 +48,11 @@ namespace Sauron
 
 			GitHubAuthenticationOptions gitHubAuthenticationOptions = new GitHubAuthenticationOptions()
 			{
-				ClientId = "ebc2a77584c4ab13705b",
-				ClientSecret = "15045e995aa7698d18d0c92055dbead2fd027354",
+				////ClientId = "ebc2a77584c4ab13705b",
+				////ClientSecret = "15045e995aa7698d18d0c92055dbead2fd027354",
+
+				ClientId = "d434a053d003d2ca0159",
+				ClientSecret = "a1c72b44256bb7deadeca5d0371960885e74c83e",
 
 				Provider = new GitHubAuthenticationProvider()
 				{
