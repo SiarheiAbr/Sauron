@@ -5,6 +5,6 @@ namespace Sauron.Services.Processing
 {
 	public interface ITestReportService
 	{
-		Task<string> GenerateTestReportForHomeWork(Guid homeWorkId);
+		Task<string> GenerateTestReportForHomeWork(string userId, Guid taskId);
 	}
 }

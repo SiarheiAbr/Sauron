@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using Sauron.Services.Models;
 
@@ -8,6 +9,6 @@ namespace Sauron.Services.DataServices
 	{
 		Task<IList<GitHubRepositoryModel>> GetUserRepositories();
 
-		Task DownloadRepository(long repositoryId);
+		Task DownloadRepository(long repositoryId, Guid taskId);
 	}
 }

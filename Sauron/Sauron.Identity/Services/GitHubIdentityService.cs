@@ -1,16 +1,20 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
+using Microsoft.AspNet.Identity;
+using Microsoft.Owin.Security;
 
 namespace Sauron.Identity.Services
 {
 	public class GitHubIdentityService : IGitHubIdentityService
 	{
 		private readonly IUserIdentityService userIdentityService;
+		private readonly IAuthenticationManager authenticationManager;
 
-		public GitHubIdentityService(IUserIdentityService userIdentityService)
+		public GitHubIdentityService(IUserIdentityService userIdentityService, IAuthenticationManager authenticationManager)
 		{
 			this.userIdentityService = userIdentityService;
+			this.authenticationManager = authenticationManager;
 		}
 
 		public static string GitHubAccessTokenClaimType { get; } = "urn:gitHub:access_token";
@@ -20,20 +24,30 @@ namespace Sauron.Identity.Services
 			claims = claims ?? this.userIdentityService.GetClaims();
 
 			var accessTokenClaim = claims.FirstOrDefault(c => c.Type.Equals(GitHubAccessTokenClaimType));
-
+			
 			if (accessTokenClaim == null)
 			{
-				throw new KeyNotFoundException("Access token doesn't exist");
+				this.authenticationManager.SignOut(DefaultAuthenticationTypes.ApplicationCookie);
+				return null;
 			}
 
 			return accessTokenClaim;
 		}
 
-		public string GetAccesToken(IEnumerable<Claim> claims = null)
+		public string GetAccessToken(IEnumerable<Claim> claims = null)
 		{
-			var accesToken = this.GetAccessTokenClaim(claims).Value;
+			string accessToken = null;
 
-			return accesToken;
+			claims = claims?.ToList();
+
+			var accessTokenClaim = this.GetAccessTokenClaim(claims);
+
+			if (accessTokenClaim != null)
+			{
+				accessToken = accessTokenClaim.Value;
+			}
+
+			return accessToken;
 		}
 	}
 }

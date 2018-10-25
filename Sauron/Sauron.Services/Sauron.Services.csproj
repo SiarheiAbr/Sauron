@@ -162,6 +162,8 @@
   <ItemGroup>
     <Compile Include="DataServices\HomeWorksService.cs" />
     <Compile Include="DataServices\IHomeWorksService.cs" />
+    <Compile Include="Helpers\AsyncProcessRunnerHelper.cs" />
+    <Compile Include="Helpers\BuildSubmissionAwaitExtensions.cs" />
     <Compile Include="Helpers\DirectoryHelper.cs" />
     <Compile Include="Processing\BuildService.cs" />
     <Compile Include="Processing\IBuildService.cs" />

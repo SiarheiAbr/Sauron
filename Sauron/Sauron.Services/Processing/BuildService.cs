@@ -10,6 +10,7 @@ using Microsoft.Build.Execution;
 using Microsoft.Build.Framework;
 using Microsoft.Build.Logging;
 using Microsoft.Build.Utilities;
+using Sauron.Services.Helpers;
 using Task = System.Threading.Tasks.Task;
 
 namespace Sauron.Services.Processing
@@ -24,9 +25,9 @@ namespace Sauron.Services.Processing
 			this.repositoryService = repositoryService;
 		}
 
-		public async Task BuildRepositorySingleProject(long repositoriId)
+		public async Task BuildRepositorySingleProject(long repositoriId, Guid taskId)
 		{
-			var localRepositoryInfo = this.repositoryService.GetLocalRepositoryInfo(repositoriId);
+			var localRepositoryInfo = this.repositoryService.GetLocalRepositoryInfo(repositoriId, taskId);
 
 			string toolsPath = this.GetToolsPath();
 			var globalProperties = this.GetGlobalProperties(localRepositoryInfo.ProjectFilePath, toolsPath, localRepositoryInfo.OutputPath);
@@ -34,7 +35,7 @@ namespace Sauron.Services.Processing
 			StringBuilder logBuilder = new StringBuilder();
 			ConsoleLogger logger = new Microsoft.Build.Logging.ConsoleLogger(LoggerVerbosity.Normal, x => logBuilder.Append(x), null, null);
 
-			this.RestoreNugetPackages(localRepositoryInfo.SolutionFilePath);
+			await this.RestoreNugetPackages(localRepositoryInfo.SolutionFilePath);
 
 			using (var projectCollection = new ProjectCollection(globalProperties))
 			{
@@ -61,9 +62,9 @@ namespace Sauron.Services.Processing
 			await Task.FromResult(0);
 		}
 
-		public async Task<BuildResult> BuildRepositorySolution(long repositoryId)
+		public async Task<BuildResult> BuildRepositorySolution(long repositoryId, Guid taskId)
 		{
-			var localRepositoryInfo = this.repositoryService.GetLocalRepositoryInfo(repositoryId);
+			var localRepositoryInfo = this.repositoryService.GetLocalRepositoryInfo(repositoryId, taskId);
 			BuildResult buildResult = null;
 
 			string toolsPath = this.GetToolsPath();
@@ -72,7 +73,7 @@ namespace Sauron.Services.Processing
 			StringBuilder logBuilder = new StringBuilder();
 			ConsoleLogger logger = new Microsoft.Build.Logging.ConsoleLogger(LoggerVerbosity.Normal, x => logBuilder.Append(x), null, null);
 
-			this.RestoreNugetPackages(localRepositoryInfo.SolutionFilePath);
+			var restoreExitCode = await this.RestoreNugetPackages(localRepositoryInfo.SolutionFilePath);
 
 			using (var projectCollection = new ProjectCollection(globalProperties))
 			{
@@ -83,17 +84,23 @@ namespace Sauron.Services.Processing
 
 				try
 				{
-					BuildParameters bp = new BuildParameters(projectCollection)
+					using (var buildManager = new BuildManager("Sauron"))
 					{
-						Loggers = new List<ILogger>()
+						BuildParameters bp = new BuildParameters(projectCollection)
 						{
-							logger
-						}
-					};
+							Loggers = new List<ILogger>()
+							{
+								logger
+							}
+						};
 
-					var buildRequest = new BuildRequestData(localRepositoryInfo.SolutionFilePath, globalProperties, null, new string[] { "Build" }, null);
+						var buildRequest = new BuildRequestData(localRepositoryInfo.SolutionFilePath, globalProperties, null, new string[] { "Build" }, null);
 
-					buildResult = BuildManager.DefaultBuildManager.Build(bp, buildRequest);
+						buildManager.BeginBuild(bp);
+						BuildSubmission submission = buildManager.PendBuildRequest(buildRequest);
+						buildResult = await submission.ExecuteAsync();
+						buildManager.EndBuild();
+					}
 				}
 				finally
 				{
@@ -105,24 +112,13 @@ namespace Sauron.Services.Processing
 			return buildResult;
 		}
 
-		private void RestoreNugetPackages(string solutionPath)
+		private async Task<int> RestoreNugetPackages(string solutionPath)
 		{
 			// TODO: rewrite to using nuget package - temp solution
 			var nugetPath = Path.GetFullPath(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, @"nuget\\nuget.exe"));
+			var arguments = $"restore \"{solutionPath}\"";
 
-			using (Process process = new Process())
-			{
-				process.StartInfo = new ProcessStartInfo
-				{
-					FileName = nugetPath,
-					Arguments = $"restore \"{solutionPath}\"",
-					UseShellExecute = false,
-					CreateNoWindow = true,
-				};
-
-				process.Start();
-				process.WaitForExit();
-			}
+			return await AsyncProcessRunnerHelper.RunProcessAsync(nugetPath, arguments);
 		}
 
 		private void SetEnvironmentVariables(Dictionary<string, string> globalProperties)

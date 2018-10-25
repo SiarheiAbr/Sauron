@@ -2,15 +2,17 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Xml;
 using System.Xml.Linq;
 using NUnit.Engine;
+using Sauron.Services.Helpers;
 
 namespace Sauron.Services.Processing.TestRunner
 {
 	public class TestRunner : MarshalByRefObject, ITestEventListener
 	{
-		public TestResults RunUnitTestsForAssembly(TestResults results)
+		public async void RunUnitTestsForAssembly(TestResults results)
 		{
 			var assemblyPath = results.ProjectDllPath;
 			XmlNode result = null;
@@ -25,7 +27,11 @@ namespace Sauron.Services.Processing.TestRunner
 
 			using (ITestRunner runner = engine.GetRunner(package))
 			{
-				result = runner.Run(this, emptyFilter);
+				var testRunAsync = (AsyncTestEngineResult)runner.RunAsync(this, emptyFilter);
+
+				await AsyncProcessRunnerHelper.FromWaitHandle(testRunAsync.WaitHandle, new TimeSpan(0, 0, 3));
+
+				result = testRunAsync.EngineResult.Xml;
 
 				var doc = new XmlDocument();
 
@@ -52,9 +58,8 @@ namespace Sauron.Services.Processing.TestRunner
 				}
 
 				results.Results = doc.InnerXml;
+				results.SetResult();
 			}
-
-			return results;
 		}
 
 		public void OnTestEvent(string report)

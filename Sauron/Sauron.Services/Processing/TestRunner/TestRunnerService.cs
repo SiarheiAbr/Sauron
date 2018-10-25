@@ -15,9 +15,9 @@ namespace Sauron.Services.Processing.TestRunner
 			this.repositoryService = repositoryService;
 		}
 
-		public async Task<string> RunUnitTests(long repositoryId)
+		public async Task<string> RunUnitTests(long repositoryId, Guid taskId)
 		{
-			var localRepositoryInfo = this.repositoryService.GetLocalRepositoryInfo(repositoryId);
+			var localRepositoryInfo = this.repositoryService.GetLocalRepositoryInfo(repositoryId, taskId);
 
 			TestResults testResultsParams = new TestResults()
 			{
@@ -27,9 +27,8 @@ namespace Sauron.Services.Processing.TestRunner
 			using (var isolatedRunner = new IsolatedWorkExecutor<TestRunner>())
 			{
 				isolatedRunner.Value.RunUnitTestsForAssembly(testResultsParams);
+				return await testResultsParams.Task;
 			}
-
-			return await Task.FromResult(testResultsParams.Results);
 		}
 	}
 }

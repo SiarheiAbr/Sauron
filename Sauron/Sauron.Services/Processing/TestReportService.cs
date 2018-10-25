@@ -23,18 +23,18 @@ namespace Sauron.Services.Processing
 			this.homeWorksService = homeWorksService;
 		}
 
-		public async Task<string> GenerateTestReportForHomeWork(Guid homeWorkId)
+		public async Task<string> GenerateTestReportForHomeWork(string userId, Guid taskId)
 		{
-			var homeWork = await this.homeWorksService.GetHomeWork(homeWorkId);
+			var homeWork = await this.homeWorksService.GetHomeWork(userId, taskId);
 
-			var testReportHtml = this.GenerateTestReport(homeWorkId, homeWork.TestsResults);
+			var testReportHtml = await this.GenerateTestReport(userId, homeWork.TaskId, homeWork.TestsResults);
 
 			return testReportHtml;
 		}
 
-		private string GenerateTestReport(Guid homeWorkId, string xmlTestsResults)
+		private async Task<string> GenerateTestReport(string userId, Guid taskId, string xmlTestsResults)
 		{
-			var testReportFolderPath = string.Format(this.config.TempTestReportsPathTemplate, homeWorkId);
+			var testReportFolderPath = string.Format(this.config.TempTestReportsPathTemplate, userId, taskId);
 
 			if (!Directory.Exists(testReportFolderPath))
 			{
@@ -51,20 +51,9 @@ namespace Sauron.Services.Processing
 			File.WriteAllText(testsResultsXmlPath, xmlTestsResults);
 
 			var reportGenerator = Path.GetFullPath(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, @"NUnitReportGenerator\\ReportUnit.exe"));
+			var arguments = $"{testsResultsXmlPath} {testsResultsHtmlPath}";
 
-			using (Process process = new Process())
-			{
-				process.StartInfo = new ProcessStartInfo
-				{
-					FileName = reportGenerator,
-					Arguments = $"{testsResultsXmlPath} {testsResultsHtmlPath}",
-					UseShellExecute = false,
-					CreateNoWindow = true
-				};
-
-				process.Start();
-				process.WaitForExit();
-			}
+			await AsyncProcessRunnerHelper.RunProcessAsync(reportGenerator, arguments);
 
 			var reportHtml = File.ReadAllText(testsResultsHtmlPath);
 

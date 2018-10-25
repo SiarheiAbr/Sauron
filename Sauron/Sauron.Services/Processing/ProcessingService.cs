@@ -43,15 +43,15 @@ namespace Sauron.Services.Processing
 				TestsResults = null
 			};
 
-			await this.gitHubService.DownloadRepository(repositoryId);
-			await this.repositoryService.ExtractRepository(repositoryId);
-			var localRepositoryInfo = this.repositoryService.GetLocalRepositoryInfo(repositoryId);
-			var buildResult = await this.buildService.BuildRepositorySolution(repositoryId);
+			await this.gitHubService.DownloadRepository(repositoryId, taskId);
+			await this.repositoryService.ExtractRepository(repositoryId, taskId);
+			var localRepositoryInfo = this.repositoryService.GetLocalRepositoryInfo(repositoryId, taskId);
+			var buildResult = await this.buildService.BuildRepositorySolution(repositoryId, taskId);
 
 			if (buildResult.OverallResult == BuildResultCode.Success)
 			{
 				homeWork.IsBuildSuccessful = true;
-				var testsResult = await this.testRunnerService.RunUnitTests(repositoryId);
+				var testsResult = await this.testRunnerService.RunUnitTests(repositoryId, taskId);
 				homeWork.TestsResults = testsResult;
 			}
 

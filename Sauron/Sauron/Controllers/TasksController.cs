@@ -1,4 +1,6 @@
-﻿using System.Linq;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using System.Web.Mvc;
 using Sauron.Services.DataServices;
@@ -23,7 +25,17 @@ namespace Sauron.Controllers
 		public async Task<ActionResult> Index()
 		{
 			var tasks = await this.tasksService.GetAvailableTasks();
-			var userRepositories = await this.gitHubService.GetUserRepositories();
+
+			IList<GitHubRepositoryModel> userRepositories = null;
+
+			try
+			{
+				userRepositories = await this.gitHubService.GetUserRepositories();
+			}
+			catch (UnauthorizedAccessException e)
+			{
+				return RedirectToAction("Index", "Home");
+			}
 
 			var repoModels = userRepositories.Select(repo => new GitHubRepositoryViewModel()
 			{

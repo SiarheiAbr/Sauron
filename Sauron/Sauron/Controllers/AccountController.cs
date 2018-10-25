@@ -303,7 +303,7 @@ namespace Sauron.Controllers
 			switch (result)
 			{
 				case SignInStatus.Success:
-					this.authenticationManager.AuthenticationResponseGrant.Identity.AddClaim(this.gitHubIdentityService.GetAccessTokenClaim(loginInfo.ExternalIdentity.Claims));
+					this.AddGitHubClaim(loginInfo);
 					return RedirectToLocal(returnUrl);
 				case SignInStatus.LockedOut:
 					return View("Lockout");
@@ -343,7 +343,7 @@ namespace Sauron.Controllers
 
 				if (result.Succeeded)
 				{
-					this.authenticationManager.AuthenticationResponseGrant.Identity.AddClaim(this.gitHubIdentityService.GetAccessTokenClaim(info.ExternalIdentity.Claims));
+					this.AddGitHubClaim(info);
 					return RedirectToLocal(returnUrl);
 				}
 
@@ -387,6 +387,16 @@ namespace Sauron.Controllers
 			}
 
 			return RedirectToAction("Index", "Home");
+		}
+
+		private void AddGitHubClaim(ExternalLoginInfo loginInfo)
+		{
+			var gitHubClaim = this.gitHubIdentityService.GetAccessTokenClaim(loginInfo.ExternalIdentity.Claims);
+
+			if (gitHubClaim != null)
+			{
+				this.authenticationManager.AuthenticationResponseGrant.Identity.AddClaim(gitHubClaim);
+			}
 		}
 
 		internal class ChallengeResult : HttpUnauthorizedResult

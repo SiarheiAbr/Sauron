@@ -24,8 +24,15 @@ namespace Sauron.Controllers
 		[HttpPost]
 		public async Task<ActionResult> DownloadRepository(long repositoryId, Guid taskId)
 		{
-			await this.processingService.ProcessHomeWork(repositoryId, taskId, User.Identity.GetUserId());
-			return RedirectToAction("Index", "HomeWorks");
+			try
+			{
+				await this.processingService.ProcessHomeWork(repositoryId, taskId, User.Identity.GetUserId());
+				return RedirectToAction("Index", "HomeWorks");
+			}
+			catch (UnauthorizedAccessException e)
+			{
+				return RedirectToAction("Index", "Home");
+			}
 		}
 	}
 }

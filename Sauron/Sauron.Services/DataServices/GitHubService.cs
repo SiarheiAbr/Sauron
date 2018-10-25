@@ -1,6 +1,8 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using NUnit.Framework.Constraints;
 using Sauron.Data.DataProviders;
 using Sauron.Identity.Services;
 using Sauron.Services.Models;
@@ -26,28 +28,45 @@ namespace Sauron.Services.DataServices
 
 		public async Task<IList<GitHubRepositoryModel>> GetUserRepositories()
 		{
-			var accessToken = this.gitHubIdentityservice.GetAccesToken();
+			var accessToken = this.gitHubIdentityservice.GetAccessToken();
+			List<GitHubRepositoryModel> resultList = null;
 
-			var repositories = await this.gitHubDataProvider.GetUserRepositories(accessToken);
-
-			var resultList = repositories.Select(x => new GitHubRepositoryModel()
+			try
 			{
-				Name = x.Name,
-				Url = x.Url,
-				GitUrl = x.GitUrl,
-				Id = x.Id
-			}).ToList();
+				var repositories = await this.gitHubDataProvider.GetUserRepositories(accessToken);
+
+				resultList = repositories.Select(x => new GitHubRepositoryModel()
+				{
+					Name = x.Name,
+					Url = x.Url,
+					GitUrl = x.GitUrl,
+					Id = x.Id
+				}).ToList();
+			}
+			catch (Exception e)
+			{
+				throw new UnauthorizedAccessException("Cannot retrieve repositories using current access token");
+			}
 
 			return resultList;
 		}
 
-		public async Task DownloadRepository(long repositoryId)
+		public async Task DownloadRepository(long repositoryId, Guid taskId)
 		{
-			var accessToken = this.gitHubIdentityservice.GetAccesToken();
+			var accessToken = this.gitHubIdentityservice.GetAccessToken();
 
-			var repoArchive = await this.gitHubDataProvider.DownloadRepository(repositoryId, accessToken);
+			byte[] repoArchive = null;
 
-			await this.repositoryService.SaveRepository(repositoryId, repoArchive);
+			try
+			{
+				repoArchive = await this.gitHubDataProvider.DownloadRepository(repositoryId, accessToken);
+			}
+			catch (Exception e)
+			{
+				throw new UnauthorizedAccessException("Cannot retrieve repository archive using current access token");
+			}
+
+			await this.repositoryService.SaveRepository(repositoryId, taskId, repoArchive);
 		}
 	}
 }
