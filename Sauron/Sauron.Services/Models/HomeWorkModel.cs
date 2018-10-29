@@ -19,5 +19,9 @@ namespace Sauron.Services.Models
 		public bool IsBuildSuccessful { get; set; }
 
 		public string TaskName { get; set; }
+
+		public string TaskGitUrl { get; set; }
+
+		public string RepoGitUrl { get; set; }
 	}
 }

@@ -29,5 +29,7 @@ namespace Sauron.Data.Entities
 		public string TestsResults { get; set; }
 
 		public bool IsBuildSuccessful { get; set; }
+
+		public string RepoGitUrl { get; set; }
 	}
 }

@@ -1,4 +1,5 @@
-﻿@model System.Web.Mvc.HandleErrorInfo
+﻿@using Sauron.Exceptions
+@model System.Web.Mvc.HandleErrorInfo
 
 @{
 	ViewBag.Title = "Error";
@@ -8,9 +9,16 @@
 {
 	<h1 class="text-danger">Something went wrong.</h1>
 	<h2 class="text-danger">Try to relogin into GitHub account.</h2>
-} else {
-<h1 class="text-danger">Error.</h1>
-<h2 class="text-danger">An error occurred while processing your request.</h2>
+}
+else if (Model.Exception is ForkException)
+{
+	<h1 class="text-danger">Something went wrong.</h1>
+	<h2 class="text-danger">@Model.Exception.Message</h2>
+}
+else
+{
+	<h1 class="text-danger">Error.</h1>
+	<h2 class="text-danger">An error occurred while processing your request.</h2>
 }
 
 

@@ -1,6 +1,6 @@
 ﻿@model IEnumerable<Sauron.ViewModels.GitHubRepositoryViewModel>
 
-@using (Html.BeginForm("DownloadRepository", "Processing", new { taskId = ViewData["taskId"] }, FormMethod.Post, new { @class = "form-inline", role = "form" }))
+@using (Html.BeginForm("ProcessHomeWork", "Processing", new { taskId = ViewData["taskId"] }, FormMethod.Post, new { @class = "form-inline", role = "form" }))
 {
 	<div class="form-group mx-sm-3 mb-2">
 		<select class="form-control" id="repositoryId" name="repositoryId">

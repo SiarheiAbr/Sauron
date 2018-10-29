@@ -33,8 +33,10 @@ namespace Sauron.Controllers
 				TaskId = hm.TaskId,
 				UserId = hm.UserId,
 				TaskName = hm.TaskName,
+				TaskGitUrl = hm.TaskGitUrl,
 				IsBuildSuccessful = hm.IsBuildSuccessful,
-				TestsResults = hm.TestsResults
+				TestsResults = hm.TestsResults,
+				RepoGitUrl = hm.RepoGitUrl
 			}).ToList();
 
 			var indexModel = new HomeWorkIndexViewModel()

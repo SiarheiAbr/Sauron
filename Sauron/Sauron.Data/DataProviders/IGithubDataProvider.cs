@@ -10,5 +10,9 @@ namespace Sauron.Data.DataProviders
 		Task<IReadOnlyList<GitHubRepositoryEntity>> GetUserRepositories(string accessToken);
 
 		Task<byte[]> DownloadRepository(long repositoryId, string accessToken);
+
+		Task<bool> IsForkOfRepo(long repositoryId, string parentRepoUrl, string accessToken);
+
+		Task<GitHubRepositoryEntity> GetRepository(long repositoryId, string accessToken);
 	}
 }

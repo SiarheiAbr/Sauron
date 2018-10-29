@@ -22,7 +22,7 @@ namespace Sauron.Data.DataProviders
 			{
 				Name = x.Name,
 				Url = x.Url,
-				GitUrl = x.GitUrl,
+				GitUrl = x.HtmlUrl,
 				Id = x.Id
 			}).ToList();
 		}
@@ -32,6 +32,40 @@ namespace Sauron.Data.DataProviders
 			var client = this.GetCLient(accessToken);
 
 			return await client.Repository.Content.GetArchive(repositoryId, ArchiveFormat.Zipball);
+		}
+
+		public async Task<bool> IsForkOfRepo(long repositoryId, string parentRepoUrl, string accessToken)
+		{
+			var result = false;
+
+			var client = this.GetCLient(accessToken);
+
+			var repoInfo = await client.Repository.Get(repositoryId);
+
+			if (repoInfo.Parent != null)
+			{
+				if (repoInfo.Parent.HtmlUrl == parentRepoUrl)
+				{
+					result = true;
+				}
+			}
+
+			return result;
+		}
+
+		public async Task<GitHubRepositoryEntity> GetRepository(long repositoryId, string accessToken)
+		{
+			var client = this.GetCLient(accessToken);
+
+			var repository = await client.Repository.Get(repositoryId);
+
+			return new GitHubRepositoryEntity()
+			{
+				Name = repository.Name,
+				Url = repository.Url,
+				GitUrl = repository.HtmlUrl,
+				Id = repository.Id
+			};
 		}
 
 		public void GetUserInfo(string userName)

@@ -41,6 +41,11 @@
 							<li class="nav-item">
 								@Html.ActionLink("Contact", "Contact", "Home", new { area = "" }, new { @class = "nav-link" })
 							</li>*@
+						@if (Request.IsAuthenticated && User.IsInRole("admin"))
+						{
+						<li class="nav-item">@Html.ActionLink("Manage Tasks", "ManageTasks", "Tasks", new { area = "" }, new { @class = "nav-link" })</li>
+						}
+
 						@if (Request.IsAuthenticated)
 						{
 							<li class="nav-item">@Html.ActionLink("Tasks", "Index", "Tasks", new { area = "" }, new { @class = "nav-link" })</li>

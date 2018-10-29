@@ -58,6 +58,10 @@ namespace Sauron.Identity.Services
 			if (result.Succeeded)
 			{
 				result = await this.userManager.AddLoginAsync(user.Id, loginInfo.Login);
+
+				// TODO:remove after testing
+				////await this.userManager.AddToRoleAsync(user.Id, "admin");
+
 				if (result.Succeeded)
 				{
 					await this.signInManager.SignInAsync(user, isPersistent: false, rememberBrowser: false);

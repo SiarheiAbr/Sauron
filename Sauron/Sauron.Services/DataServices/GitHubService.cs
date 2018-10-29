@@ -68,5 +68,49 @@ namespace Sauron.Services.DataServices
 
 			await this.repositoryService.SaveRepository(repositoryId, taskId, repoArchive);
 		}
+
+		public async Task<bool> IsForkOfRepo(long repositoryId, string parentRepoUrl)
+		{
+			var accessToken = this.gitHubIdentityservice.GetAccessToken();
+
+			bool result = false;
+
+			try
+			{
+				result = await this.gitHubDataProvider.IsForkOfRepo(repositoryId, parentRepoUrl, accessToken);
+			}
+			catch (Exception e)
+			{
+				throw new UnauthorizedAccessException("Cannot retrieve repository archive using current access token");
+			}
+
+			return result;
+		}
+
+		public async Task<GitHubRepositoryModel> GetRepositoryInfo(long repositoryId)
+		{
+			GitHubRepositoryModel result;
+
+			var accessToken = this.gitHubIdentityservice.GetAccessToken();
+
+			try
+			{
+				var entity = await this.gitHubDataProvider.GetRepository(repositoryId, accessToken);
+				
+				result = new GitHubRepositoryModel()
+				{
+					Name = entity.Name,
+					Url = entity.Url,
+					GitUrl = entity.GitUrl,
+					Id = entity.Id
+				};
+			}
+			catch (Exception e)
+			{
+				throw new UnauthorizedAccessException("Cannot retrieve repository archive using current access token");
+			}
+
+			return result;
+		}
 	}
 }

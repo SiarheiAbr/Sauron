@@ -30,7 +30,9 @@ namespace Sauron.Services.DataServices
 				UserId = hm.UserId,
 				IsBuildSuccessful = hm.IsBuildSuccessful,
 				TestsResults = hm.TestsResults,
-				TaskName = hm.Task.Name
+				TaskName = hm.Task.Name,
+				TaskGitUrl = hm.Task.GitHubUrl,
+				RepoGitUrl = hm.RepoGitUrl
 			}).ToList();
 
 			return models;
@@ -47,7 +49,9 @@ namespace Sauron.Services.DataServices
 				UserId = entity.UserId,
 				IsBuildSuccessful = entity.IsBuildSuccessful,
 				TestsResults = entity.TestsResults,
-				TaskName = entity.Task.Name
+				TaskName = entity.Task.Name,
+				TaskGitUrl = entity.Task.GitHubUrl,
+				RepoGitUrl = entity.RepoGitUrl
 			};
 
 			return model;
@@ -68,7 +72,9 @@ namespace Sauron.Services.DataServices
 
 				UserId = homeWork.UserId,
 
-				TestsResults = homeWork.TestsResults
+				TestsResults = homeWork.TestsResults,
+
+				RepoGitUrl = homeWork.RepoGitUrl
 			};
 
 			var existingHomeWork = await this.homeWorksRepository.GetHomeWork(homeWork.UserId, homeWork.TaskId);
@@ -97,7 +103,9 @@ namespace Sauron.Services.DataServices
 				UserId = entity.UserId,
 				IsBuildSuccessful = entity.IsBuildSuccessful,
 				TestsResults = entity.TestsResults,
-				TaskName = entity.Task.Name
+				TaskName = entity.Task.Name,
+				TaskGitUrl = entity.Task.GitHubUrl,
+				RepoGitUrl = entity.RepoGitUrl
 			};
 
 			return model;

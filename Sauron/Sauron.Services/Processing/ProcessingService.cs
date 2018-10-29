@@ -18,48 +18,73 @@ namespace Sauron.Services.Processing
 		private readonly IRepositoryService repositoryService;
 		private readonly ITestRunnerService testRunnerService;
 		private readonly IHomeWorksService homeWorksService;
+		private readonly ITasksService tasksService;
 
 		public ProcessingService(
 			IGitHubService gitHubService,
 			IRepositoryService repositoryService,
 			IBuildService buildService,
 			ITestRunnerService testRunnerService,
-			IHomeWorksService homeWorksService)
+			IHomeWorksService homeWorksService,
+			ITasksService tasksService)
 		{
 			this.gitHubService = gitHubService;
 			this.repositoryService = repositoryService;
 			this.buildService = buildService;
 			this.testRunnerService = testRunnerService;
 			this.homeWorksService = homeWorksService;
+			this.tasksService = tasksService;
+		}
+
+		public async Task<bool> IsSubmittedRepoIsForkOfTask(long repositoryId, Guid taskId)
+		{
+			var task = await this.tasksService.GetTask(taskId);
+
+			return await this.gitHubService.IsForkOfRepo(repositoryId, task.GitHubUrl);
 		}
 
 		public async Task ProcessHomeWork(long repositoryId, Guid taskId, string userId)
 		{
+			var repoInfo = await this.gitHubService.GetRepositoryInfo(repositoryId);
+
 			var homeWork = new HomeWorkModel()
 			{
 				TaskId = taskId,
 				UserId = userId,
 				IsBuildSuccessful = false,
-				TestsResults = null
+				TestsResults = null,
+				RepoGitUrl = repoInfo.GitUrl
 			};
-
+			
 			await this.gitHubService.DownloadRepository(repositoryId, taskId);
+
 			await this.repositoryService.ExtractRepository(repositoryId, taskId);
+
 			var localRepositoryInfo = this.repositoryService.GetLocalRepositoryInfo(repositoryId, taskId);
-			var buildResult = await this.buildService.BuildRepositorySolution(repositoryId, taskId);
 
-			if (buildResult.OverallResult == BuildResultCode.Success)
+			try
 			{
-				homeWork.IsBuildSuccessful = true;
-				var testsResult = await this.testRunnerService.RunUnitTests(repositoryId, taskId);
-				homeWork.TestsResults = testsResult;
+				var buildResult = await this.buildService.BuildRepositorySolution(repositoryId, taskId);
+
+				if (buildResult.OverallResult == BuildResultCode.Success)
+				{
+					homeWork.IsBuildSuccessful = true;
+					var testsResult = await this.testRunnerService.RunUnitTests(repositoryId, taskId);
+					homeWork.TestsResults = testsResult;
+				}
 			}
+			catch (Exception e)
+			{
+				// TODO: log exception for user build
+			}
+			finally
+			{
+				await this.homeWorksService.SaveHomeWork(homeWork);
 
-			await this.homeWorksService.SaveHomeWork(homeWork);
+				DirectoryHelper.CleanDirectory(localRepositoryInfo.RepositoryFolderPath);
 
-			DirectoryHelper.CleanDirectory(localRepositoryInfo.RepositoryFolderPath);
-
-			DirectoryHelper.DeleteDirectory(localRepositoryInfo.RepositoryFolderPath);
+				DirectoryHelper.DeleteDirectory(localRepositoryInfo.RepositoryFolderPath);
+			}
 		}
 	}
 }

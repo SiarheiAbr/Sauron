@@ -49,12 +49,12 @@ namespace Sauron
 			GitHubAuthenticationOptions gitHubAuthenticationOptions = new GitHubAuthenticationOptions()
 			{
 				////Azure
-				ClientId = "ebc2a77584c4ab13705b",
-				ClientSecret = "15045e995aa7698d18d0c92055dbead2fd027354",
+				////ClientId = "ebc2a77584c4ab13705b",
+				////ClientSecret = "15045e995aa7698d18d0c92055dbead2fd027354",
 
 				////Local
-				////ClientId = "d434a053d003d2ca0159",
-				////ClientSecret = "a1c72b44256bb7deadeca5d0371960885e74c83e",
+				ClientId = "d434a053d003d2ca0159",
+				ClientSecret = "a1c72b44256bb7deadeca5d0371960885e74c83e",
 
 				Provider = new GitHubAuthenticationProvider()
 				{

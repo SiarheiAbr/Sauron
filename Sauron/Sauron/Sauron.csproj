@@ -452,9 +452,11 @@
     <Compile Include="Controllers\HomeWorksController.cs" />
     <Compile Include="Controllers\ManageController.cs" />
     <Compile Include="Controllers\TasksController.cs" />
+    <Compile Include="Exceptions\ForkException.cs" />
     <Compile Include="ViewModels\AddPhoneNumberViewModel.cs" />
     <Compile Include="ViewModels\ChangePasswordViewModel.cs" />
     <Compile Include="ViewModels\ConfigureTwoFactorViewModel.cs" />
+    <Compile Include="ViewModels\CreateEditTaskViewModel.cs" />
     <Compile Include="ViewModels\ExternalLoginConfirmationViewModel.cs" />
     <Compile Include="ViewModels\ExternalLoginListViewModel.cs" />
     <Compile Include="ViewModels\FactorViewModel.cs" />
@@ -475,6 +477,7 @@
     <Compile Include="ViewModels\SendCodeViewModel.cs" />
     <Compile Include="ViewModels\SetPasswordViewModel.cs" />
     <Compile Include="ViewModels\TasksIndexViewModel.cs" />
+    <Compile Include="ViewModels\TasksManageViewModel.cs" />
     <Compile Include="ViewModels\TaskViewModel.cs" />
     <Compile Include="ViewModels\VerifyCodeViewModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -591,6 +594,9 @@
     <Content Include="Views\Tasks\Index.cshtml" />
     <Content Include="Views\HomeWorks\Index.cshtml" />
     <Content Include="Views\Tasks\_RepositoriesSelector.cshtml" />
+    <Content Include="Views\Tasks\ManageTasks.cshtml" />
+    <Content Include="Views\Tasks\Create.cshtml" />
+    <Content Include="Views\Tasks\Edit.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

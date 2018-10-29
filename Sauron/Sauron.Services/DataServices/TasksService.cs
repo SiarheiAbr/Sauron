@@ -1,6 +1,8 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Sauron.Data.Entities;
 using Sauron.Data.Repositories;
 using Sauron.Services.Models;
 
@@ -27,6 +29,51 @@ namespace Sauron.Services.DataServices
 			}).ToList();
 
 			return tasksModels;
+		}
+
+		public async Task<TaskModel> GetTask(Guid taskId)
+		{
+			var entity = await this.tasksRepository.GetTask(taskId);
+
+			if (entity != null)
+			{
+				return new TaskModel()
+				{
+					Id = entity.Id,
+					Name = entity.Name,
+					GitHubUrl = entity.GitHubUrl
+				};
+			}
+
+			return null;
+		}
+
+		public async Task CreateTask(TaskModel taskModel)
+		{
+			var entity = new TaskEntity()
+			{
+				Name = taskModel.Name,
+				GitHubUrl = taskModel.GitHubUrl
+			};
+
+			await this.tasksRepository.CreateTask(entity);
+		}
+
+		public async Task EditTask(TaskModel taskModel)
+		{
+			var entity = new TaskEntity()
+			{
+				Id = taskModel.Id,
+				Name = taskModel.Name,
+				GitHubUrl = taskModel.GitHubUrl
+			};
+
+			await this.tasksRepository.EditTask(entity);
+		}
+
+		public async Task DeleteTask(Guid taskId)
+		{
+			await this.tasksRepository.DeleteTask(taskId);
 		}
 	}
 }

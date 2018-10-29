@@ -2,6 +2,7 @@
 using System.Threading.Tasks;
 using System.Web.Mvc;
 using Microsoft.AspNet.Identity;
+using Sauron.Exceptions;
 using Sauron.Services;
 using Sauron.Services.DataServices;
 using Sauron.Services.Models;
@@ -22,11 +23,19 @@ namespace Sauron.Controllers
 		}
 
 		[HttpPost]
-		public async Task<ActionResult> DownloadRepository(long repositoryId, Guid taskId)
+		public async Task<ActionResult> ProcessHomeWork(long repositoryId, Guid taskId)
 		{
 			try
 			{
+				var forkOfRepo = await this.processingService.IsSubmittedRepoIsForkOfTask(repositoryId, taskId);
+
+				if (!forkOfRepo)
+				{
+					return View("Error", new HandleErrorInfo(new ForkException(), "Processing", "ProcessHomeWork"));
+				}
+
 				await this.processingService.ProcessHomeWork(repositoryId, taskId, User.Identity.GetUserId());
+
 				return RedirectToAction("Index", "HomeWorks");
 			}
 			catch (UnauthorizedAccessException e)

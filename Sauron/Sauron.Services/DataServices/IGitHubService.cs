@@ -10,5 +10,9 @@ namespace Sauron.Services.DataServices
 		Task<IList<GitHubRepositoryModel>> GetUserRepositories();
 
 		Task DownloadRepository(long repositoryId, Guid taskId);
+
+		Task<bool> IsForkOfRepo(long repositoryId, string parentRepoUrl);
+
+		Task<GitHubRepositoryModel> GetRepositoryInfo(long repositoryId);
 	}
 }
