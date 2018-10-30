@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 using System.Web.Mvc;
 using Microsoft.AspNet.Identity;
 using Sauron.Exceptions;
+using Sauron.Identity;
 using Sauron.Services;
 using Sauron.Services.DataServices;
 using Sauron.Services.Models;
@@ -27,11 +28,14 @@ namespace Sauron.Controllers
 		{
 			try
 			{
-				var forkOfRepo = await this.processingService.IsSubmittedRepoIsForkOfTask(repositoryId, taskId);
-
-				if (!forkOfRepo)
+				if (!User.IsInRole(UserRoles.Admin))
 				{
-					return View("Error", new HandleErrorInfo(new ForkException(), "Processing", "ProcessHomeWork"));
+					var forkOfRepo = await this.processingService.IsSubmittedRepoIsForkOfTask(repositoryId, taskId);
+
+					if (!forkOfRepo)
+					{
+						return View("Error", new HandleErrorInfo(new ForkException(), "Processing", "ProcessHomeWork"));
+					}
 				}
 
 				await this.processingService.ProcessHomeWork(repositoryId, taskId, User.Identity.GetUserId());

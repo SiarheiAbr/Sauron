@@ -133,6 +133,7 @@
     <Compile Include="Services\IUserIdentityService.cs" />
     <Compile Include="Services\UserIdentityService.cs" />
     <Compile Include="UnityConfig.cs" />
+    <Compile Include="UserRoles.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config">

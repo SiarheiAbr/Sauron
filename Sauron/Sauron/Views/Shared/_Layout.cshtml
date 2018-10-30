@@ -1,4 +1,5 @@
 ﻿@using Microsoft.AspNet.Identity
+@using Sauron.Identity
 <!DOCTYPE html>
 <html>
 <head>
@@ -41,7 +42,7 @@
 							<li class="nav-item">
 								@Html.ActionLink("Contact", "Contact", "Home", new { area = "" }, new { @class = "nav-link" })
 							</li>*@
-						@if (Request.IsAuthenticated && User.IsInRole("admin"))
+						@if (Request.IsAuthenticated && User.IsInRole(UserRoles.Admin))
 						{
 						<li class="nav-item">@Html.ActionLink("Manage Tasks", "ManageTasks", "Tasks", new { area = "" }, new { @class = "nav-link" })</li>
 						}

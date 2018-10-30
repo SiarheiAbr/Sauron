@@ -1,6 +1,7 @@
 ﻿using System;
 using System.IO;
 using System.IO.Compression;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using Sauron.Identity.Services;
 using Sauron.Services.Helpers;
@@ -72,15 +73,20 @@ namespace Sauron.Services.Processing
 		{
 			var solutionFolderPath = this.GetSolutionFolderPath(repositoryId, taskId);
 			var outputPath = string.Format(this.config.OutputPathTemplate, solutionFolderPath);
+			var projectFilePath = this.GetProjectFilePath(repositoryId, taskId);
+
+			var match = Regex.Match(projectFilePath, "(\\w+).csproj$");
+			var projectDllName = string.Concat(match.Groups[1].Value, ".dll");
+			var projectDllPath = Path.Combine(outputPath, projectDllName);
 
 			var localRepositoryInfo = new LocalRepositoryModel()
 			{
 				SolutionFilePath = this.GetSolutionFilePath(repositoryId, taskId),
-				ProjectFilePath = this.GetProjectFilePath(repositoryId, taskId),
+				ProjectFilePath = projectFilePath,
 				RepositoryFolderPath = this.GetRepositoryFolderPath(repositoryId, taskId),
 				SolutionFolderPath = solutionFolderPath,
 				OutputPath = outputPath,
-				ProjectDllPath = Path.Combine(outputPath, "SimpleCalc.dll")
+				ProjectDllPath = projectDllPath
 			};
 
 			return localRepositoryInfo;

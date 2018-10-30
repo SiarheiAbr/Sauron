@@ -16,7 +16,7 @@ namespace Sauron.Identity.Entities
 			get
 			{
 				return this.Claims.FirstOrDefault(x => x.ClaimType == ClaimTypes.Role
-													   && x.ClaimValue == "admin") != null;
+													   && x.ClaimValue == UserRoles.Admin) != null;
 			}
 		}
 

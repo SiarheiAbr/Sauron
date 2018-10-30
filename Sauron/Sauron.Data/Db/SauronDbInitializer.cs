@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Microsoft.AspNet.Identity.EntityFramework;
 using Sauron.Data.Entities;
+using Sauron.Identity;
 
 namespace Sauron.Data.Db
 {
@@ -24,7 +25,7 @@ namespace Sauron.Data.Db
 			var adminRole = new IdentityRole()
 			{
 				Id = Guid.NewGuid().ToString(),
-				Name = "admin"
+				Name = UserRoles.Admin
 			};
 
 			context.Roles.Add(adminRole);
