@@ -20,6 +20,7 @@ namespace Sauron.Services.Processing.TestRunner
 			package.AddSetting("WorkDirectory", Path.GetDirectoryName(assemblyPath));
 
 			// prepare the engine
+			// TODO: parse hidden tests names and add to filter to prevent running other tests
 			ITestEngine engine = TestEngineActivator.CreateInstance();
 			var filterService = engine.Services.GetService<ITestFilterService>();
 			ITestFilterBuilder builder = filterService.GetTestFilterBuilder();

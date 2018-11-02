@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -19,7 +18,6 @@ namespace Sauron.Services.Processing
 	{
 		private readonly IRepositoryService repositoryService;
 
-		// TODO: Check build with changed downloaded repo, delete multiple solutions if exist
 		public BuildService(IRepositoryService repositoryService)
 		{
 			this.repositoryService = repositoryService;
@@ -35,7 +33,7 @@ namespace Sauron.Services.Processing
 			StringBuilder logBuilder = new StringBuilder();
 			ConsoleLogger logger = new Microsoft.Build.Logging.ConsoleLogger(LoggerVerbosity.Normal, x => logBuilder.Append(x), null, null);
 
-			await this.RestoreNugetPackages(localRepositoryInfo.SolutionFilePath);
+			await this.RestoreNugetPackages(localRepositoryInfo.SolutionFilePath, localRepositoryInfo.NugetPath);
 
 			using (var projectCollection = new ProjectCollection(globalProperties))
 			{
@@ -73,7 +71,7 @@ namespace Sauron.Services.Processing
 			StringBuilder logBuilder = new StringBuilder();
 			ConsoleLogger logger = new Microsoft.Build.Logging.ConsoleLogger(LoggerVerbosity.Normal, x => logBuilder.Append(x), null, null);
 
-			var restoreExitCode = await this.RestoreNugetPackages(localRepositoryInfo.SolutionFilePath);
+			var restoreExitCode = await this.RestoreNugetPackages(localRepositoryInfo.SolutionFilePath, localRepositoryInfo.NugetPath);
 
 			using (var projectCollection = new ProjectCollection(globalProperties))
 			{
@@ -84,7 +82,7 @@ namespace Sauron.Services.Processing
 
 				try
 				{
-					using (var buildManager = new BuildManager("Sauron"))
+					using (var buildManager = new BuildManager(localRepositoryInfo.CombinedGuid))
 					{
 						BuildParameters bp = new BuildParameters(projectCollection)
 						{
@@ -94,10 +92,13 @@ namespace Sauron.Services.Processing
 							}
 						};
 
-						var buildRequest = new BuildRequestData(localRepositoryInfo.SolutionFilePath, globalProperties, null, new string[] { "Build" }, null);
+						var buildRequest = new BuildRequestData(localRepositoryInfo.SolutionFilePath, globalProperties, null, new string[] { "Build" }, null, BuildRequestDataFlags.ReplaceExistingProjectInstance);
+
+						BuildSubmission submission = null;
 
 						buildManager.BeginBuild(bp);
-						BuildSubmission submission = buildManager.PendBuildRequest(buildRequest);
+						submission = buildManager.PendBuildRequest(buildRequest);
+
 						buildResult = await submission.ExecuteAsync();
 						buildManager.EndBuild();
 					}
@@ -112,10 +113,8 @@ namespace Sauron.Services.Processing
 			return buildResult;
 		}
 
-		private async Task<int> RestoreNugetPackages(string solutionPath)
+		private async Task<int> RestoreNugetPackages(string solutionPath, string nugetPath)
 		{
-			// TODO: rewrite to using nuget package - temp solution
-			var nugetPath = Path.GetFullPath(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, @"nuget\\nuget.exe"));
 			var arguments = $"restore \"{solutionPath}\"";
 
 			return await AsyncProcessRunnerHelper.RunProcessAsync(nugetPath, arguments);
@@ -132,20 +131,17 @@ namespace Sauron.Services.Processing
 
 		private Dictionary<string, string> GetGlobalProperties(string projectPath, string toolsPath, string outputPath)
 		{
-			string solutionDir = Path.GetDirectoryName(projectPath);
 			string extensionsPath = Path.GetFullPath(Path.Combine(toolsPath, @"..\..\"));
 			string sdksPath = Path.Combine(extensionsPath, "Sdks");
 			string roslynTargetsPath = Path.Combine(toolsPath, "Roslyn");
 
 			return new Dictionary<string, string>
 			{
-				{ "SolutionDir", solutionDir },
 				{ "MSBuildExtensionsPath", extensionsPath },
 				{ "MSBuildSDKsPath", sdksPath },
 				{ "MSBuildFrameworkToolsPath", toolsPath },
 				{ "MSBuildToolsPath32", toolsPath },
-				{ "RoslynTargetsPath", roslynTargetsPath },
-				{ "OutputPath", outputPath }
+				{ "RoslynTargetsPath", roslynTargetsPath }
 			};
 		}
 

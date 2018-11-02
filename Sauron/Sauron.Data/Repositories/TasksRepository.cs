@@ -41,6 +41,8 @@ namespace Sauron.Data.Repositories
 
 			task.GitHubUrl = entity.GitHubUrl;
 			task.Name = entity.Name;
+			task.HiddenTestsUploaded = entity.HiddenTestsUploaded;
+			task.TestsFileName = entity.TestsFileName;
 
 			await this.context.SaveChangesAsync();
 		}

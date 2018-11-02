@@ -20,6 +20,10 @@ namespace Sauron.Data.Entities
 
 		public string GitHubUrl { get; set; }
 
+		public string TestsFileName { get; set; }
+
+		public bool HiddenTestsUploaded { get; set; }
+
 		public ICollection<HomeWorkEntity> HoweWorks { get; set; }
 	}
 }

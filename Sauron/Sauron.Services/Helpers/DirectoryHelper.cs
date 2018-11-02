@@ -13,21 +13,35 @@ namespace Sauron.Services.Helpers
 		{
 			var directoryInfo = new DirectoryInfo(directoryPath);
 
-			foreach (FileInfo file in directoryInfo.EnumerateFiles())
+			try
 			{
-				file.Delete();
-			}
+				foreach (FileInfo file in directoryInfo.EnumerateFiles())
+				{
+					file.Delete();
+				}
 
-			foreach (DirectoryInfo dir in directoryInfo.EnumerateDirectories())
+				foreach (DirectoryInfo dir in directoryInfo.EnumerateDirectories())
+				{
+					dir.Delete(true);
+				}
+			}
+			catch (Exception e)
 			{
-				dir.Delete(true);
+				// TODO: log clean repositories errors
 			}
 		}
 
 		public static void DeleteDirectory(string directoryPath)
 		{
-			var directoryInfo = new DirectoryInfo(directoryPath);
-			directoryInfo.Delete(true);
+			try
+			{
+				var directoryInfo = new DirectoryInfo(directoryPath);
+				directoryInfo.Delete(true);
+			}
+			catch (Exception e)
+			{
+				// TODO: log delete directories errors
+			}
 		}
 	}
 }

@@ -11,5 +11,9 @@ namespace Sauron.Services.Processing
 		Task SaveRepository(long repositoryId, Guid taskId, byte[] archiveData);
 
 		LocalRepositoryModel GetLocalRepositoryInfo(long repositoryId, Guid taskId);
+
+		Task PutHiddenTestsIntoRepository(long repositoryId, Guid taskId);
+
+		Task CopyNugetRunnerIntoRepository(long repositoryId, Guid taskId);
 	}
 }

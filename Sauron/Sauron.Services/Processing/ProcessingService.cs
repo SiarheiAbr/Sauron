@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Build.Execution;
 using Sauron.Services.DataServices;
@@ -60,6 +61,10 @@ namespace Sauron.Services.Processing
 
 			await this.repositoryService.ExtractRepository(repositoryId, taskId);
 
+			await this.repositoryService.PutHiddenTestsIntoRepository(repositoryId, taskId);
+
+			await this.repositoryService.CopyNugetRunnerIntoRepository(repositoryId, taskId);
+
 			var localRepositoryInfo = this.repositoryService.GetLocalRepositoryInfo(repositoryId, taskId);
 
 			try
@@ -76,6 +81,7 @@ namespace Sauron.Services.Processing
 			catch (Exception e)
 			{
 				// TODO: log exception for user build
+				// TODO: save build info into database???
 			}
 			finally
 			{

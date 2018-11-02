@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Web;
 using System.Web.Mvc;
 using System.Web.Security;
 using Sauron.Services.DataServices;
@@ -72,7 +73,9 @@ namespace Sauron.Controllers
 			{
 				Id = task.Id,
 				Name = task.Name,
-				GitHubUrl = task.GitHubUrl
+				GitHubUrl = task.GitHubUrl,
+				HiddenTestsUploaded = task.HiddenTestsUploaded,
+				TestsFileName = task.TestsFileName
 			};
 
 			return View(viewModel);
@@ -80,13 +83,16 @@ namespace Sauron.Controllers
 
 		[Authorize(Roles = "admin")]
 		[HttpPost]
-		public async Task<ActionResult> Edit(CreateEditTaskViewModel taskModel)
+		public async Task<ActionResult> Edit(CreateEditTaskViewModel model)
 		{
 			var task = new TaskModel()
 			{
-				Id = taskModel.Id,
-				Name = taskModel.Name,
-				GitHubUrl = taskModel.GitHubUrl
+				Id = model.Id,
+				Name = model.Name,
+				GitHubUrl = model.GitHubUrl,
+				TestsFileName = model.TestsFileName,
+				HiddenTestsUploaded = !model.HiddenTestsUploaded ? model.HiddenTestFile != null : model.HiddenTestsUploaded,
+				HiddenTestsFile = model.HiddenTestFile?.InputStream
 			};
 
 			await this.tasksService.EditTask(task);
@@ -96,12 +102,15 @@ namespace Sauron.Controllers
 
 		[Authorize(Roles = "admin")]
 		[HttpPost]
-		public async Task<ActionResult> Create(CreateEditTaskViewModel taskModel)
+		public async Task<ActionResult> Create(CreateEditTaskViewModel model)
 		{
 			var task = new TaskModel()
 			{
-				Name = taskModel.Name,
-				GitHubUrl = taskModel.GitHubUrl
+				Name = model.Name,
+				GitHubUrl = model.GitHubUrl,
+				TestsFileName = model.TestsFileName,
+				HiddenTestsUploaded = model.HiddenTestFile != null,
+				HiddenTestsFile = model.HiddenTestFile?.InputStream
 			};
 
 			await this.tasksService.CreateTask(task);

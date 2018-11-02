@@ -13,5 +13,7 @@ namespace Sauron.Services.Settings
 		string OutputPathTemplate { get; }
 
 		string TempTestReportsPathTemplate { get; }
+
+		string HiddenTestsPathTemplate { get; }
 	}
 }

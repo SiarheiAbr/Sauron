@@ -42,7 +42,7 @@ namespace Sauron
 			Sauron.Services.UnityConfig.RegisterTypes(container, () => new PerRequestLifetimeManager());
 			Sauron.Identity.UnityConfig.RegisterTypes(container, () => new PerRequestLifetimeManager());
 
-			container.RegisterType<IAuthenticationManager>(new InjectionFactory(c => HttpContext.Current.GetOwinContext().Authentication));
+			container.RegisterType<IAuthenticationManager>(new PerRequestLifetimeManager(), new InjectionFactory(c => HttpContext.Current.GetOwinContext().Authentication));
 		}
 	}
 }

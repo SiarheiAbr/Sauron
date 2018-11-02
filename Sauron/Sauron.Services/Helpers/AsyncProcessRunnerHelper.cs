@@ -31,7 +31,7 @@ namespace Sauron.Services.Helpers
 
 			exitedHandler = (sender, args) =>
 			{
-				tcs.SetResult(process.ExitCode);
+				var exitCode = process.ExitCode;
 
 				if (exitedHandler != null)
 				{
@@ -39,6 +39,8 @@ namespace Sauron.Services.Helpers
 				}
 
 				process.Dispose();
+
+				tcs.SetResult(exitCode);
 			};
 
 			process.Exited += exitedHandler;

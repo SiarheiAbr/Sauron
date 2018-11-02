@@ -26,7 +26,7 @@ namespace Sauron
 
 			DependencyResolver.SetResolver(new Unity.AspNet.Mvc.UnityDependencyResolver(UnityConfig.Container));
 
-			// TODO: Uncomment if you want to use PerRequestLifetimeManager
+			// Uncomment if you want to use PerRequestLifetimeManager
 			Microsoft.Web.Infrastructure.DynamicModuleHelper.DynamicModuleUtility.RegisterModule(typeof(UnityPerRequestHttpModule));
 		}
 

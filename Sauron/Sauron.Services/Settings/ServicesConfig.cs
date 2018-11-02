@@ -14,5 +14,7 @@ namespace Sauron.Services.Settings
 		public string OutputPathTemplate => ConfigurationManager.AppSettings["OutputPathTemplate"];
 
 		public string TempTestReportsPathTemplate => ConfigurationManager.AppSettings["TempTestReportsPathTemplate"];
+
+		public string HiddenTestsPathTemplate => ConfigurationManager.AppSettings["HiddenTestsPathTemplate"];
 	}
 }

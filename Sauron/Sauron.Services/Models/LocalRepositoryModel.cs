@@ -19,5 +19,9 @@ namespace Sauron.Services.Models
 		public string RepositoryFolderPath { get; set; }
 
 		public string ProjectDllPath { get; set; }
+
+		public string CombinedGuid { get; set; }
+
+		public string NugetPath { get; set; }
 	}
 }
