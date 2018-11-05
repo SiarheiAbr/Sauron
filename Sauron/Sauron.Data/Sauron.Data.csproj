@@ -34,6 +34,15 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release AWS|AnyCPU'">
+    <OutputPath>bin\Release AWS\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <Optimize>true</Optimize>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="CommonServiceLocator, Version=2.0.4.0, Culture=neutral, PublicKeyToken=489b6accfaf20ef0, processorArchitecture=MSIL">
       <HintPath>..\packages\Unity.5.8.11\lib\net46\CommonServiceLocator.dll</HintPath>
@@ -111,13 +120,9 @@
     <Compile Include="Entities\GitHubRepositoryEntity.cs" />
     <Compile Include="Entities\HomeWorkEntity.cs" />
     <Compile Include="Entities\TaskEntity.cs" />
-    <Compile Include="Migrations\201810301625473_InitialCreate.cs" />
-    <Compile Include="Migrations\201810301625473_InitialCreate.Designer.cs">
-      <DependentUpon>201810301625473_InitialCreate.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\201810311505131_HiddenTests.cs" />
-    <Compile Include="Migrations\201810311505131_HiddenTests.Designer.cs">
-      <DependentUpon>201810311505131_HiddenTests.cs</DependentUpon>
+    <Compile Include="Migrations\201811052007519_InitialCreate.cs" />
+    <Compile Include="Migrations\201811052007519_InitialCreate.Designer.cs">
+      <DependentUpon>201811052007519_InitialCreate.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -141,11 +146,8 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Migrations\201810301625473_InitialCreate.resx">
-      <DependentUpon>201810301625473_InitialCreate.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201810311505131_HiddenTests.resx">
-      <DependentUpon>201810311505131_HiddenTests.cs</DependentUpon>
+    <EmbeddedResource Include="Migrations\201811052007519_InitialCreate.resx">
+      <DependentUpon>201811052007519_InitialCreate.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
