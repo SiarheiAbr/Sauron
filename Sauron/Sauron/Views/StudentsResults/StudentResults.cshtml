@@ -1,0 +1,11 @@
+﻿@model Sauron.ViewModels.StudentResultsViewModel
+@{
+	Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>@Model.StudentInfo.Name&nbsp;Home&nbsp;Works</h2>
+@{
+	Html.RenderPartial("_HomeWorksList", Model.HomeWorks);
+}
+
+

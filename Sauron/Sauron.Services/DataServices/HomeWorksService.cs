@@ -19,6 +19,20 @@ namespace Sauron.Services.DataServices
 			this.homeWorksRepository = homeWorksRepository;
 		}
 
+		public async Task<IList<StudentModel>> GetStudentsInfo()
+		{
+			var studentsInfoEntities = await this.homeWorksRepository.GetStudentsInfo();
+
+			var studentsInfoModels = studentsInfoEntities.Select(x => new StudentModel()
+			{
+				Name = x.Name,
+				UserId = x.UserId,
+				SubmittedHomeWorks = x.SubmittedHomeWorks
+			}).ToList();
+
+			return studentsInfoModels;
+		}
+
 		public async Task<IList<HomeWorkModel>> GetHomeWorks(string userId)
 		{
 			var entities = await this.homeWorksRepository.GetHomeWorks(userId);

@@ -1,0 +1,37 @@
+﻿@model Sauron.ViewModels.StudentsResultsIndexViewModel
+@{
+	Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<table class="table">
+	<thead>
+		<tr>
+			<th scope="col">Student Name</th>
+			<th scope="col">Submitted Home Works</th>
+			<th scope="col">View Home Works Details</th>
+		</tr>
+	</thead>
+	<tbody>
+		@foreach (var student in Model.Students)
+		{
+			<tr>
+				<td>
+					@student.Name
+				</td>
+				<td>
+					@student.SubmittedHomeWorks
+				</td>
+				<td>
+					@Html.ActionLink("Details", "StudentResults", "StudentsResults",
+						new
+						{
+							userId = @student.UserId,
+
+						}, new { @class = "btn btn-outline-secondary", target = "_blank" })
+				</td>
+			</tr>
+		}
+	</tbody>
+</table>
+
+

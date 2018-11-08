@@ -26,6 +26,19 @@ namespace Sauron.Data.Repositories
 			return homeWorks;
 		}
 
+		public async Task<IList<StudentEntity>> GetStudentsInfo()
+		{
+			var studentsInfo = await this.context.HomeWorks
+				.GroupBy(x => x.User)
+				.Select(g => new StudentEntity()
+				{
+					Name = g.Key.UserName, UserId = g.Key.Id, SubmittedHomeWorks = g.Count()
+				})
+				.ToListAsync();
+
+			return studentsInfo;
+		}
+
 		public async Task DeleteHomeWork(string userId, Guid taskId)
 		{
 			var homeWork = await this.context.HomeWorks.FirstOrDefaultAsync(hm => hm.UserId == userId && hm.TaskId == taskId);

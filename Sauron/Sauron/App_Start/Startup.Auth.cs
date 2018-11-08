@@ -49,12 +49,12 @@ namespace Sauron
 				////ClientSecret = "15045e995aa7698d18d0c92055dbead2fd027354",
 
 				////Local
-				////ClientId = "d434a053d003d2ca0159",
-				////ClientSecret = "a1c72b44256bb7deadeca5d0371960885e74c83e",
+				ClientId = "d434a053d003d2ca0159",
+				ClientSecret = "a1c72b44256bb7deadeca5d0371960885e74c83e",
 
 				////AWS
-				ClientId = "9b762bade83d2c7eed13",
-				ClientSecret = "ea42772991fb6b4b74742757ec0484259a77f8ac",
+				////ClientId = "9b762bade83d2c7eed13",
+				////ClientSecret = "ea42772991fb6b4b74742757ec0484259a77f8ac",
 
 				Provider = new GitHubAuthenticationProvider()
 				{

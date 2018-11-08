@@ -1,7 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using Sauron.Services.Models;
 
@@ -18,5 +16,7 @@ namespace Sauron.Services.DataServices
 		Task SaveHomeWork(HomeWorkModel homeWorkModel);
 
 		Task<HomeWorkModel> GetHomeWork(Guid homeWorkId);
+
+		Task<IList<StudentModel>> GetStudentsInfo();
 	}
 }

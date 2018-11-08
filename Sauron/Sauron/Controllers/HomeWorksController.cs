@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using System.Web.Mvc;
 using System.Web.UI.WebControls;
 using Microsoft.AspNet.Identity;
+using Sauron.Identity;
 using Sauron.Services.DataServices;
 using Sauron.Services.Processing;
 using Sauron.ViewModels;
@@ -50,9 +51,12 @@ namespace Sauron.Controllers
 		[HttpGet]
 		public async Task<ActionResult> ViewTestReportResults(string userId, Guid taskId)
 		{
-			if (userId != User.Identity.GetUserId())
+			if (!User.IsInRole(UserRoles.Admin))
 			{
-				return RedirectToAction("Index", "Home");
+				if (userId != User.Identity.GetUserId())
+				{
+					return RedirectToAction("Index", "Home");
+				}
 			}
 
 			var reportHtml = await this.testReportService.GenerateTestReportForHomeWork(userId, taskId);

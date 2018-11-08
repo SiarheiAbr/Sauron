@@ -5,7 +5,8 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProductVersion></ProductVersion>
+    <ProductVersion>
+    </ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{904359A8-11F3-41C1-BFDF-6CB996C1B2CC}</ProjectGuid>
     <ProjectTypeGuids>{349c5851-65df-11da-9384-00065b846f21};{fae04ec0-301f-11d3-bf4b-00c04f79efbc}</ProjectTypeGuids>
@@ -22,7 +23,8 @@
     <IISExpressWindowsAuthentication />
     <IISExpressUseClassicPipelineMode />
     <UseGlobalApplicationHostFile />
-    <NuGetPackageImportStamp></NuGetPackageImportStamp>
+    <NuGetPackageImportStamp>
+    </NuGetPackageImportStamp>
     <TypeScriptToolsVersion>2.8</TypeScriptToolsVersion>
     <StyleCopTreatErrorsAsWarnings>False</StyleCopTreatErrorsAsWarnings>
   </PropertyGroup>
@@ -449,6 +451,7 @@
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\HomeWorksController.cs" />
     <Compile Include="Controllers\ManageController.cs" />
+    <Compile Include="Controllers\StudentsResultsController.cs" />
     <Compile Include="Controllers\TasksController.cs" />
     <Compile Include="Exceptions\ForkException.cs" />
     <Compile Include="ViewModels\AddPhoneNumberViewModel.cs" />
@@ -474,6 +477,9 @@
     <Compile Include="ViewModels\ResetPasswordViewModel.cs" />
     <Compile Include="ViewModels\SendCodeViewModel.cs" />
     <Compile Include="ViewModels\SetPasswordViewModel.cs" />
+    <Compile Include="ViewModels\StudentResultsViewModel.cs" />
+    <Compile Include="ViewModels\StudentsResultsIndexViewModel.cs" />
+    <Compile Include="ViewModels\StudentViewModel.cs" />
     <Compile Include="ViewModels\TasksIndexViewModel.cs" />
     <Compile Include="ViewModels\TasksManageViewModel.cs" />
     <Compile Include="ViewModels\TaskViewModel.cs" />
@@ -595,6 +601,9 @@
     <Content Include="Views\Tasks\ManageTasks.cshtml" />
     <Content Include="Views\Tasks\Create.cshtml" />
     <Content Include="Views\Tasks\Edit.cshtml" />
+    <Content Include="Views\StudentsResults\Index.cshtml" />
+    <Content Include="Views\StudentsResults\StudentResults.cshtml" />
+    <Content Include="Views\Shared\_HomeWorksList.cshtml" />
     <None Include="Web.Release AWS.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
@@ -663,7 +672,8 @@
           <IISUrl>http://localhost:49638/</IISUrl>
           <NTLMAuthentication>False</NTLMAuthentication>
           <UseCustomServer>False</UseCustomServer>
-          <CustomServerUrl></CustomServerUrl>
+          <CustomServerUrl>
+          </CustomServerUrl>
           <SaveServerSettingsInUserFile>False</SaveServerSettingsInUserFile>
         </WebProjectProperties>
       </FlavorProperties>

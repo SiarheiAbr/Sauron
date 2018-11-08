@@ -119,6 +119,7 @@
     <Compile Include="Db\SauronDbInitializer.cs" />
     <Compile Include="Entities\GitHubRepositoryEntity.cs" />
     <Compile Include="Entities\HomeWorkEntity.cs" />
+    <Compile Include="Entities\StudentEntity.cs" />
     <Compile Include="Entities\TaskEntity.cs" />
     <Compile Include="Migrations\201811052007519_InitialCreate.cs" />
     <Compile Include="Migrations\201811052007519_InitialCreate.Designer.cs">

@@ -1,0 +1,50 @@
+﻿@model IList<Sauron.ViewModels.HomeWorkViewModel>
+
+<table class="table">
+	<thead>
+		<tr>
+			<th scope="col">Task&nbsp;Repo</th>
+			<th scope="col">Home&nbsp;Work&nbsp;Repo</th>
+			<th scope="col">Build</th>
+			<th scope="col">Tests&nbsp;Results</th>
+		</tr>
+	</thead>
+	<tbody>
+		@foreach (var homeWork in Model)
+		{
+			<tr>
+				<td>
+					<a target="_blank" href="@homeWork.TaskGitUrl">@homeWork.TaskName</a>
+				</td>
+				<td>
+					<a target="_blank" href="@homeWork.RepoGitUrl">Repo Link</a>
+				</td>
+				<td>
+					@if (homeWork.IsBuildSuccessful)
+					{
+						<p>Successful</p>
+					}
+					else
+					{
+						<p>Failed</p>
+					}
+				</td>
+				<td>
+					@if (homeWork.IsBuildSuccessful)
+					{
+						@Html.ActionLink("View Report", "ViewTestReportResults", "HomeWorks",
+							new
+							{
+								userId = @homeWork.UserId,
+								taskId = @homeWork.TaskId
+							}, new { @class = "btn btn-outline-secondary", target = "_blank" })
+					}
+					else
+					{
+						<p>Not started due to failed build</p>
+					}
+				</td>
+			</tr>
+		}
+	</tbody>
+</table>
