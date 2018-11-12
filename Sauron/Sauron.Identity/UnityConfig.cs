@@ -1,7 +1,7 @@
 ﻿using System;
 using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.EntityFramework;
-using Sauron.Identity.Entities;
+using Sauron.Data.Entities;
 using Sauron.Identity.Managers;
 using Sauron.Identity.Services;
 using Unity;

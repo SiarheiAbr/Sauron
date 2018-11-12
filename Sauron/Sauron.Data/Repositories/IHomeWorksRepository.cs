@@ -15,7 +15,7 @@ namespace Sauron.Data.Repositories
 
 		Task<HomeWorkEntity> GetHomeWork(Guid homeWorkId);
 
-		Task SaveHomeWork(HomeWorkEntity homeWork);
+		Task AddOrUpdateHomeWork(HomeWorkEntity homeWork);
 
 		Task<IList<StudentEntity>> GetStudentsInfo();
 	}

@@ -622,6 +622,10 @@
     <Service Include="{4A0DDDB5-7A95-4FBF-97CC-616D07737A77}" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Sauron.Common\Sauron.Common.csproj">
+      <Project>{282535e6-29e5-4076-bb03-00bcd4673d11}</Project>
+      <Name>Sauron.Common</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Sauron.Identity\Sauron.Identity.csproj">
       <Project>{de48ee5a-e6db-4dd5-8f3f-92dac3c422d4}</Project>
       <Name>Sauron.Identity</Name>

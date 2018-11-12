@@ -6,6 +6,7 @@
 			<th scope="col">Task&nbsp;Repo</th>
 			<th scope="col">Home&nbsp;Work&nbsp;Repo</th>
 			<th scope="col">Build</th>
+			<th scope="col">Attempts</th>
 			<th scope="col">Tests&nbsp;Results</th>
 		</tr>
 	</thead>
@@ -28,6 +29,9 @@
 					{
 						<p>Failed</p>
 					}
+				</td>
+				<td>
+					@homeWork.AttempsCount
 				</td>
 				<td>
 					@if (homeWork.IsBuildSuccessful)

@@ -23,5 +23,7 @@ namespace Sauron.Services.Models
 		public string TaskGitUrl { get; set; }
 
 		public string RepoGitUrl { get; set; }
+
+		public int AttemptsCount { get; set; }
 	}
 }

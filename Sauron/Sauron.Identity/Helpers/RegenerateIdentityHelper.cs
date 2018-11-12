@@ -2,7 +2,7 @@
 using System.Threading.Tasks;
 using Microsoft.AspNet.Identity.Owin;
 using Microsoft.Owin.Security.Cookies;
-using Sauron.Identity.Entities;
+using Sauron.Data.Entities;
 using Sauron.Identity.Managers;
 
 namespace Sauron.Identity.Helpers

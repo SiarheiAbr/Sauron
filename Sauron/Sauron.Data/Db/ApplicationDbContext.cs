@@ -1,14 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations.Schema;
 using System.Data.Entity;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Microsoft.AspNet.Identity.EntityFramework;
 using Sauron.Data.Entities;
-using Sauron.Identity;
-using Sauron.Identity.Entities;
 
 namespace Sauron.Data.Db
 {
@@ -36,7 +29,7 @@ namespace Sauron.Data.Db
 
 			modelBuilder.Entity<HomeWorkEntity>()
 				.HasRequired(hm => hm.User)
-				.WithMany()
+				.WithMany(user => user.HoweWorks)
 				.HasForeignKey(hm => hm.UserId)
 				.WillCascadeOnDelete(true);
 		}

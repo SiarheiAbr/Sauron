@@ -1,11 +1,13 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
+﻿using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
 using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.EntityFramework;
+using Sauron.Common.Static;
 
-namespace Sauron.Identity.Entities
+namespace Sauron.Data.Entities
 {
 	// You can add profile data for the user by adding more properties to your ApplicationUser class, please visit https://go.microsoft.com/fwlink/?LinkID=317594 to learn more.
 	public class ApplicationUser : IdentityUser
@@ -19,6 +21,8 @@ namespace Sauron.Identity.Entities
 													   && x.ClaimValue == UserRoles.Admin) != null;
 			}
 		}
+
+		public ICollection<HomeWorkEntity> HoweWorks { get; set; }
 
 		public async Task<ClaimsIdentity> GenerateUserIdentityAsync(UserManager<ApplicationUser> manager)
 		{

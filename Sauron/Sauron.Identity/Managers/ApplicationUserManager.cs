@@ -2,7 +2,7 @@
 using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.Owin;
 using Microsoft.Owin.Security.DataProtection;
-using Sauron.Identity.Entities;
+using Sauron.Data.Entities;
 
 namespace Sauron.Identity.Managers
 {

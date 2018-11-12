@@ -1,10 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading;
 using System.Threading.Tasks;
+using System.Windows.Forms;
 using Microsoft.Build.Execution;
+using Sauron.Identity.Services;
 using Sauron.Services.DataServices;
 using Sauron.Services.Helpers;
 using Sauron.Services.Models;
@@ -14,12 +12,15 @@ namespace Sauron.Services.Processing
 {
 	public class ProcessingService : IProcessingService
 	{
+		public const int MaxBuildAttemptsCount = 3;
+
 		private readonly IGitHubService gitHubService;
 		private readonly IBuildService buildService;
 		private readonly IRepositoryService repositoryService;
 		private readonly ITestRunnerService testRunnerService;
 		private readonly IHomeWorksService homeWorksService;
 		private readonly ITasksService tasksService;
+		private readonly IUserIdentityService userIdentityService;
 
 		public ProcessingService(
 			IGitHubService gitHubService,
@@ -27,7 +28,8 @@ namespace Sauron.Services.Processing
 			IBuildService buildService,
 			ITestRunnerService testRunnerService,
 			IHomeWorksService homeWorksService,
-			ITasksService tasksService)
+			ITasksService tasksService,
+			IUserIdentityService userIdentityService)
 		{
 			this.gitHubService = gitHubService;
 			this.repositoryService = repositoryService;
@@ -35,6 +37,7 @@ namespace Sauron.Services.Processing
 			this.testRunnerService = testRunnerService;
 			this.homeWorksService = homeWorksService;
 			this.tasksService = tasksService;
+			this.userIdentityService = userIdentityService;
 		}
 
 		public async Task<bool> IsSubmittedRepoIsForkOfTask(long repositoryId, Guid taskId)
@@ -46,17 +49,33 @@ namespace Sauron.Services.Processing
 
 		public async Task ProcessHomeWork(long repositoryId, Guid taskId, string userId)
 		{
+			HomeWorkModel homeWork = null;
+
+			homeWork = await this.homeWorksService.GetHomeWork(userId, taskId);
 			var repoInfo = await this.gitHubService.GetRepositoryInfo(repositoryId);
 
-			var homeWork = new HomeWorkModel()
+			if (homeWork == null)
 			{
-				TaskId = taskId,
-				UserId = userId,
-				IsBuildSuccessful = false,
-				TestsResults = null,
-				RepoGitUrl = repoInfo.GitUrl
-			};
-			
+				homeWork = new HomeWorkModel()
+				{
+					TaskId = taskId,
+					UserId = userId,
+					IsBuildSuccessful = false,
+					TestsResults = null,
+					RepoGitUrl = repoInfo.GitUrl,
+					AttemptsCount = 1
+				};
+			}
+			else
+			{
+				if (homeWork.AttemptsCount >= MaxBuildAttemptsCount && !this.userIdentityService.IsAdmin())
+				{
+					throw new ApplicationException($"You can't submit your home work more than {MaxBuildAttemptsCount} times.");
+				}
+
+				homeWork.AttemptsCount++;
+			}
+
 			await this.gitHubService.DownloadRepository(repositoryId, taskId);
 
 			await this.repositoryService.ExtractRepository(repositoryId, taskId);
@@ -78,14 +97,14 @@ namespace Sauron.Services.Processing
 					homeWork.TestsResults = testsResult;
 				}
 			}
-			catch (Exception e)
+			catch (Exception)
 			{
 				// TODO: log exception for user build
 				// TODO: save build info into database???
 			}
 			finally
 			{
-				await this.homeWorksService.SaveHomeWork(homeWork);
+				await this.homeWorksService.AddOrUpdateHomeWork(homeWork);
 
 				DirectoryHelper.CleanDirectory(localRepositoryInfo.RepositoryFolderPath);
 

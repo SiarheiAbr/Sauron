@@ -8,5 +8,7 @@ namespace Sauron.Identity.Services
 		IEnumerable<Claim> GetClaims();
 
 		string GetUserId();
+
+		bool IsAdmin();
 	}
 }

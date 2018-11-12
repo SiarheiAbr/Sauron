@@ -10,7 +10,7 @@
 	<h1 class="text-danger">Something went wrong.</h1>
 	<h2 class="text-danger">Try to relogin into GitHub account.</h2>
 }
-else if (Model.Exception is ForkException)
+else if (Model.Exception is ForkException || Model.Exception is ApplicationException)
 {
 	<h1 class="text-danger">Something went wrong.</h1>
 	<h2 class="text-danger">@Model.Exception.Message</h2>

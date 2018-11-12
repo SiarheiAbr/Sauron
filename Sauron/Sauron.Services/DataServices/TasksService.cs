@@ -17,10 +17,38 @@ namespace Sauron.Services.DataServices
 
 		private readonly IServicesConfig config;
 
-		public TasksService(ITasksRepository tasksRepository, IServicesConfig config)
+		private readonly IHomeWorksRepository homeWorksRepository;
+
+		public TasksService(ITasksRepository tasksRepository, IHomeWorksRepository homeWorksRepository, IServicesConfig config)
 		{
 			this.tasksRepository = tasksRepository;
 			this.config = config;
+			this.homeWorksRepository = homeWorksRepository;
+		}
+
+		public async Task<IList<TaskModel>> GetAvailableTasks(string userId)
+		{
+			var tasksEntities = await this.tasksRepository.GetAvailableTasks();
+			var homeWorks = await this.homeWorksRepository.GetHomeWorks(userId);
+
+			var homeWorksDictionary = homeWorks.ToDictionary(x => x.TaskId, x => x.AttemptsCount);
+
+			var tasksModels = tasksEntities.Select(entity =>
+			{
+				var attemptsCountExists = homeWorksDictionary.TryGetValue(entity.Id, out var attemptsCount);
+
+				return new TaskModel()
+				{
+					Id = entity.Id,
+					Name = entity.Name,
+					GitHubUrl = entity.GitHubUrl,
+					TestsFileName = entity.TestsFileName,
+					HiddenTestsUploaded = entity.HiddenTestsUploaded,
+					AttemptsCount = attemptsCountExists ? attemptsCount : 0
+				};
+			}).ToList();
+
+			return tasksModels;
 		}
 
 		public async Task<IList<TaskModel>> GetAvailableTasks()

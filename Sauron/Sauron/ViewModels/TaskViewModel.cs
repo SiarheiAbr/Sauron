@@ -12,5 +12,7 @@ namespace Sauron.ViewModels
 		public string Name { get; set; }
 
 		public string GitHubUrl { get; set; }
+
+		public int AttemptsCount { get; set; }
 	}
 }

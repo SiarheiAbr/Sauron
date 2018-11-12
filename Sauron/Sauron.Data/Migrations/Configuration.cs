@@ -1,9 +1,8 @@
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using Microsoft.AspNet.Identity.EntityFramework;
-using Sauron.Data.Entities;
-using Sauron.Identity;
+using Sauron.Common;
+using Sauron.Common.Static;
 
 namespace Sauron.Data.Migrations
 {

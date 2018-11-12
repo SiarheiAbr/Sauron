@@ -20,5 +20,7 @@ namespace Sauron.Services.Models
 		public bool HiddenTestsUploaded { get; set; }
 
 		public Stream HiddenTestsFile { get; set; }
+
+		public int AttemptsCount { get; set; }
 	}
 }

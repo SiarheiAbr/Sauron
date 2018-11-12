@@ -129,7 +129,6 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Managers\ApplicationSignInManager.cs" />
-    <Compile Include="Entities\ApplicationUser.cs" />
     <Compile Include="Managers\ApplicationUserManager.cs" />
     <Compile Include="Models\RegisterModel.cs" />
     <Compile Include="Models\UserModel.cs" />
@@ -142,7 +141,6 @@
     <Compile Include="Services\IUserIdentityService.cs" />
     <Compile Include="Services\UserIdentityService.cs" />
     <Compile Include="UnityConfig.cs" />
-    <Compile Include="UserRoles.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config">
@@ -151,6 +149,15 @@
     <None Include="packages.config" />
     <None Include="Settings.StyleCop" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <ProjectReference Include="..\Sauron.Common\Sauron.Common.csproj">
+      <Project>{282535e6-29e5-4076-bb03-00bcd4673d11}</Project>
+      <Name>Sauron.Common</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Sauron.Data\Sauron.Data.csproj">
+      <Project>{0c2cdb56-1a3b-478e-b657-604a2d004d50}</Project>
+      <Name>Sauron.Data</Name>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

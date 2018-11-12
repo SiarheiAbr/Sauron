@@ -1,9 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.Owin;
-using Sauron.Identity.Entities;
+using Sauron.Data.Entities;
 using Sauron.Identity.Managers;
 using Sauron.Identity.Models;
 
@@ -11,8 +10,8 @@ namespace Sauron.Identity.Services
 {
 	public class ApplicationUserService : IApplicationUserService
 	{
-		private ApplicationUserManager userManager;
-		private ApplicationSignInManager signInManager;
+		private readonly ApplicationUserManager userManager;
+		private readonly ApplicationSignInManager signInManager;
 
 		public ApplicationUserService(ApplicationUserManager userManager, ApplicationSignInManager signInManager)
 		{

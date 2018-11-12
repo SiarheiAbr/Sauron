@@ -4,6 +4,8 @@ using System.Threading.Tasks;
 using System.Web.Mvc;
 using System.Web.UI.WebControls;
 using Microsoft.AspNet.Identity;
+using Sauron.Common;
+using Sauron.Common.Static;
 using Sauron.Identity;
 using Sauron.Services.DataServices;
 using Sauron.Services.Processing;
@@ -37,7 +39,8 @@ namespace Sauron.Controllers
 				TaskGitUrl = hm.TaskGitUrl,
 				IsBuildSuccessful = hm.IsBuildSuccessful,
 				TestsResults = hm.TestsResults,
-				RepoGitUrl = hm.RepoGitUrl
+				RepoGitUrl = hm.RepoGitUrl,
+				AttempsCount = hm.AttemptsCount
 			}).ToList();
 
 			var indexModel = new HomeWorkIndexViewModel()

@@ -1,5 +1,6 @@
 ﻿@using Microsoft.AspNet.Identity
-@using Sauron.Identity
+@using Sauron.Common.Static
+
 <!DOCTYPE html>
 <html>
 <head>
@@ -37,11 +38,11 @@
 							@Html.ActionLink("Home", "Index", "Home", new { area = "" }, new { @class = "nav-link" })
 						</li>
 						@*<li class="nav-item">
-			@Html.ActionLink("About", "About", "Home", new { area = "" }, new { @class = "nav-link" })
-		</li>
-		<li class="nav-item">
-			@Html.ActionLink("Contact", "Contact", "Home", new { area = "" }, new { @class = "nav-link" })
-		</li>*@
+								@Html.ActionLink("About", "About", "Home", new { area = "" }, new { @class = "nav-link" })
+							</li>
+							<li class="nav-item">
+								@Html.ActionLink("Contact", "Contact", "Home", new { area = "" }, new { @class = "nav-link" })
+							</li>*@
 						@if (Request.IsAuthenticated && User.IsInRole(UserRoles.Admin))
 						{
 							<li class="nav-item">@Html.ActionLink("Students Dashboard", "Index", "StudentsResults", new { area = "" }, new { @class = "nav-link" })</li>

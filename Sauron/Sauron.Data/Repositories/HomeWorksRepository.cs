@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data.Entity;
+using System.Data.Entity.Migrations;
 using System.Linq;
 using System.Threading.Tasks;
 using Sauron.Data.Db;
@@ -28,13 +29,12 @@ namespace Sauron.Data.Repositories
 
 		public async Task<IList<StudentEntity>> GetStudentsInfo()
 		{
-			var studentsInfo = await this.context.HomeWorks
-				.GroupBy(x => x.User)
-				.Select(g => new StudentEntity()
-				{
-					Name = g.Key.UserName, UserId = g.Key.Id, SubmittedHomeWorks = g.Count()
-				})
-				.ToListAsync();
+			var studentsInfo = await this.context.Users.Select(g => new StudentEntity()
+			{
+				Name = g.UserName,
+				UserId = g.Id,
+				SubmittedHomeWorks = g.HoweWorks.Count
+			}).ToListAsync();
 
 			return studentsInfo;
 		}
@@ -67,9 +67,9 @@ namespace Sauron.Data.Repositories
 			return homeWork;
 		}
 
-		public async Task SaveHomeWork(HomeWorkEntity homeWork)
+		public async Task AddOrUpdateHomeWork(HomeWorkEntity homeWork)
 		{
-			this.context.HomeWorks.Add(homeWork);
+			this.context.HomeWorks.AddOrUpdate(homeWork);
 			await this.context.SaveChangesAsync();
 		}
 	}

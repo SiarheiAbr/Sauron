@@ -2,14 +2,9 @@
 using System.Threading.Tasks;
 using System.Web.Mvc;
 using Microsoft.AspNet.Identity;
+using Sauron.Common.Static;
 using Sauron.Exceptions;
-using Sauron.Identity;
-using Sauron.Services;
-using Sauron.Services.DataServices;
-using Sauron.Services.Models;
 using Sauron.Services.Processing;
-using Sauron.Services.Processing.TestRunner;
-using Sauron.ViewModels;
 
 namespace Sauron.Controllers
 {
@@ -42,7 +37,7 @@ namespace Sauron.Controllers
 
 				return RedirectToAction("Index", "HomeWorks");
 			}
-			catch (UnauthorizedAccessException e)
+			catch (UnauthorizedAccessException)
 			{
 				return RedirectToAction("Index", "Home");
 			}

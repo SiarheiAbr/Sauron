@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
 using Microsoft.Owin.Security;
+using Sauron.Common.Static;
 
 namespace Sauron.Identity.Services
 {
@@ -18,6 +19,11 @@ namespace Sauron.Identity.Services
 		public IEnumerable<Claim> GetClaims()
 		{
 			return this.authenticationManager.User.Claims;
+		}
+
+		public bool IsAdmin()
+		{
+			return this.authenticationManager.User.IsInRole(UserRoles.Admin);
 		}
 
 		public string GetUserId()

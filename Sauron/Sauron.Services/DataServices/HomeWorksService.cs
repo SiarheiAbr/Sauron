@@ -5,7 +5,6 @@ using System.Text;
 using System.Threading.Tasks;
 using Sauron.Data.Entities;
 using Sauron.Data.Repositories;
-using Sauron.Identity.Entities;
 using Sauron.Services.Models;
 
 namespace Sauron.Services.DataServices
@@ -46,7 +45,8 @@ namespace Sauron.Services.DataServices
 				TestsResults = hm.TestsResults,
 				TaskName = hm.Task.Name,
 				TaskGitUrl = hm.Task.GitHubUrl,
-				RepoGitUrl = hm.RepoGitUrl
+				RepoGitUrl = hm.RepoGitUrl,
+				AttemptsCount = hm.AttemptsCount
 			}).ToList();
 
 			return models;
@@ -65,7 +65,8 @@ namespace Sauron.Services.DataServices
 				TestsResults = entity.TestsResults,
 				TaskName = entity.Task.Name,
 				TaskGitUrl = entity.Task.GitHubUrl,
-				RepoGitUrl = entity.RepoGitUrl
+				RepoGitUrl = entity.RepoGitUrl,
+				AttemptsCount = entity.AttemptsCount
 			};
 
 			return model;
@@ -76,10 +77,12 @@ namespace Sauron.Services.DataServices
 			await this.homeWorksRepository.DeleteHomeWork(userId, taskId);
 		}
 
-		public async Task SaveHomeWork(HomeWorkModel homeWork)
+		public async Task AddOrUpdateHomeWork(HomeWorkModel homeWork)
 		{
 			var homeWorkEntity = new HomeWorkEntity()
 			{
+				Id = homeWork.Id,
+
 				TaskId = homeWork.TaskId,
 
 				IsBuildSuccessful = homeWork.IsBuildSuccessful,
@@ -88,17 +91,12 @@ namespace Sauron.Services.DataServices
 
 				TestsResults = homeWork.TestsResults,
 
-				RepoGitUrl = homeWork.RepoGitUrl
+				RepoGitUrl = homeWork.RepoGitUrl,
+
+				AttemptsCount = homeWork.AttemptsCount
 			};
 
-			var existingHomeWork = await this.homeWorksRepository.GetHomeWork(homeWork.UserId, homeWork.TaskId);
-
-			if (existingHomeWork != null)
-			{
-				await this.homeWorksRepository.DeleteHomeWork(homeWork.UserId, homeWork.TaskId);
-			}
-
-			await this.homeWorksRepository.SaveHomeWork(homeWorkEntity);
+			await this.homeWorksRepository.AddOrUpdateHomeWork(homeWorkEntity);
 		}
 
 		public async Task<HomeWorkModel> GetHomeWork(string userId, Guid taskId)
@@ -119,7 +117,8 @@ namespace Sauron.Services.DataServices
 				TestsResults = entity.TestsResults,
 				TaskName = entity.Task.Name,
 				TaskGitUrl = entity.Task.GitHubUrl,
-				RepoGitUrl = entity.RepoGitUrl
+				RepoGitUrl = entity.RepoGitUrl,
+				AttemptsCount = entity.AttemptsCount
 			};
 
 			return model;

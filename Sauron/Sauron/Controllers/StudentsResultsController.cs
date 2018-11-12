@@ -62,7 +62,8 @@ namespace Sauron.Controllers
 				TaskGitUrl = hm.TaskGitUrl,
 				IsBuildSuccessful = hm.IsBuildSuccessful,
 				TestsResults = hm.TestsResults,
-				RepoGitUrl = hm.RepoGitUrl
+				RepoGitUrl = hm.RepoGitUrl,
+				AttempsCount = hm.AttemptsCount
 			}).ToList();
 
 			var resultModel = new StudentResultsViewModel()

@@ -2,7 +2,7 @@
 using System.Threading.Tasks;
 using Microsoft.AspNet.Identity.Owin;
 using Microsoft.Owin.Security;
-using Sauron.Identity.Entities;
+using Sauron.Data.Entities;
 
 namespace Sauron.Identity.Managers
 {

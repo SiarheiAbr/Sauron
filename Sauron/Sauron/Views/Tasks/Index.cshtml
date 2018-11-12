@@ -1,4 +1,6 @@
-﻿@model Sauron.ViewModels.TasksIndexViewModel
+﻿@using Sauron.Common.Static
+@using Sauron.Services.Processing
+@model Sauron.ViewModels.TasksIndexViewModel
 
 @{
     ViewBag.Title = "Index";
@@ -23,11 +25,20 @@
 					<p>@task.Name</p>
 				</td>
 				<td><a target ="_blank" href="@task.GitHubUrl">@task.Name</a></td>
-				<td>
-					@{
-						Html.RenderPartial("_RepositoriesSelector", Model.Repositories, new ViewDataDictionary { { "taskId", task.Id } });
-					}
-				</td>
+				@if (task.AttemptsCount >= ProcessingService.MaxBuildAttemptsCount && !User.IsInRole(UserRoles.Admin))
+				{
+					<td>
+						"You can't submit this home work. Maximum attempts reached."
+					</td>
+				}
+				else
+				{
+					<td>
+						@{
+							Html.RenderPartial("_RepositoriesSelector", Model.Repositories, new ViewDataDictionary { { "taskId", task.Id } });
+						}
+					</td>
+				}
 			</tr>
 		}
 	</tbody>

@@ -7,6 +7,8 @@ namespace Sauron.Services.DataServices
 {
 	public interface ITasksService
 	{
+		Task<IList<TaskModel>> GetAvailableTasks(string userId);
+
 		Task<IList<TaskModel>> GetAvailableTasks();
 
 		Task<TaskModel> GetTask(Guid taskId);

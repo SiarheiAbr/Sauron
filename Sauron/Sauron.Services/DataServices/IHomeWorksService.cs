@@ -13,7 +13,7 @@ namespace Sauron.Services.DataServices
 
 		Task<HomeWorkModel> GetHomeWork(string userId, Guid taskId);
 
-		Task SaveHomeWork(HomeWorkModel homeWorkModel);
+		Task AddOrUpdateHomeWork(HomeWorkModel homeWork);
 
 		Task<HomeWorkModel> GetHomeWork(Guid homeWorkId);
 

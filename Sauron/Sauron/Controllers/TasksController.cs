@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
 using System.Web.Security;
+using Microsoft.AspNet.Identity;
 using Sauron.Services.DataServices;
 using Sauron.Services.Models;
 using Sauron.ViewModels;
@@ -26,7 +27,7 @@ namespace Sauron.Controllers
 		// GET
 		public async Task<ActionResult> Index()
 		{
-			var tasks = await this.tasksService.GetAvailableTasks();
+			var tasks = await this.tasksService.GetAvailableTasks(User.Identity.GetUserId());
 
 			IList<GitHubRepositoryModel> userRepositories = null;
 
@@ -51,7 +52,8 @@ namespace Sauron.Controllers
 			{
 				Id = task.Id,
 				GitHubUrl = task.GitHubUrl,
-				Name = task.Name
+				Name = task.Name,
+				AttemptsCount = task.AttemptsCount
 			}).ToList();
 
 			var viewModel = new TasksIndexViewModel()
