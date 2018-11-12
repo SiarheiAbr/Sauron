@@ -24,5 +24,7 @@ namespace Sauron.ViewModels
 		public string RepoGitUrl { get; set; }
 
 		public int AttempsCount { get; set; }
+
+		public int TestsMark { get; set; }
 	}
 }

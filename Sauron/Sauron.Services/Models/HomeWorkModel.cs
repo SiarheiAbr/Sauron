@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Sauron.Services.Models
 {
@@ -25,5 +21,7 @@ namespace Sauron.Services.Models
 		public string RepoGitUrl { get; set; }
 
 		public int AttemptsCount { get; set; }
+
+		public int TestsMark { get; set; }
 	}
 }

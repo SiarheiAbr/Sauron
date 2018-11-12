@@ -1,6 +1,7 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
-using System.Windows.Forms;
+using System.Xml;
 using Microsoft.Build.Execution;
 using Sauron.Identity.Services;
 using Sauron.Services.DataServices;
@@ -95,6 +96,7 @@ namespace Sauron.Services.Processing
 					homeWork.IsBuildSuccessful = true;
 					var testsResult = await this.testRunnerService.RunUnitTests(repositoryId, taskId);
 					homeWork.TestsResults = testsResult;
+					homeWork.TestsMark = this.CalculateMarkForHomeWork(homeWork.TestsResults);
 				}
 			}
 			catch (Exception)
@@ -110,6 +112,41 @@ namespace Sauron.Services.Processing
 
 				DirectoryHelper.DeleteDirectory(localRepositoryInfo.RepositoryFolderPath);
 			}
+		}
+
+		private int CalculateMarkForHomeWork(string resultXml)
+		{
+			var doc = new XmlDocument();
+			doc.LoadXml(resultXml);
+
+			var testCases = doc.GetElementsByTagName("test-case");
+
+			var result = 0;
+
+			foreach (var testCase in testCases)
+			{
+				var testCaseNode = (XmlNode)testCase;
+				var xmlAttributeCollection = testCaseNode.Attributes;
+
+				var testResult = xmlAttributeCollection?["result"];
+
+				if (testResult != null && testResult.Value == "Passed")
+				{
+					var markNode = XmlHelper.FindNode(testCaseNode.ChildNodes, "Mark", true);
+
+					var markAttribute = markNode?.Attributes?["value"];
+
+					if (markAttribute != null)
+					{
+						if (int.TryParse(markAttribute.Value, out var markForTest))
+						{
+							result += markForTest;
+						}
+					}
+				}
+			}
+
+			return result;
 		}
 	}
 }

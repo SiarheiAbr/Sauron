@@ -46,7 +46,8 @@ namespace Sauron.Services.DataServices
 				TaskName = hm.Task.Name,
 				TaskGitUrl = hm.Task.GitHubUrl,
 				RepoGitUrl = hm.RepoGitUrl,
-				AttemptsCount = hm.AttemptsCount
+				AttemptsCount = hm.AttemptsCount,
+				TestsMark = hm.TestsMark
 			}).ToList();
 
 			return models;
@@ -66,7 +67,8 @@ namespace Sauron.Services.DataServices
 				TaskName = entity.Task.Name,
 				TaskGitUrl = entity.Task.GitHubUrl,
 				RepoGitUrl = entity.RepoGitUrl,
-				AttemptsCount = entity.AttemptsCount
+				AttemptsCount = entity.AttemptsCount,
+				TestsMark = entity.TestsMark
 			};
 
 			return model;
@@ -93,7 +95,9 @@ namespace Sauron.Services.DataServices
 
 				RepoGitUrl = homeWork.RepoGitUrl,
 
-				AttemptsCount = homeWork.AttemptsCount
+				AttemptsCount = homeWork.AttemptsCount,
+
+				TestsMark = homeWork.TestsMark
 			};
 
 			await this.homeWorksRepository.AddOrUpdateHomeWork(homeWorkEntity);
@@ -118,7 +122,8 @@ namespace Sauron.Services.DataServices
 				TaskName = entity.Task.Name,
 				TaskGitUrl = entity.Task.GitHubUrl,
 				RepoGitUrl = entity.RepoGitUrl,
-				AttemptsCount = entity.AttemptsCount
+				AttemptsCount = entity.AttemptsCount,
+				TestsMark = entity.TestsMark
 			};
 
 			return model;

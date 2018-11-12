@@ -40,7 +40,8 @@ namespace Sauron.Controllers
 				IsBuildSuccessful = hm.IsBuildSuccessful,
 				TestsResults = hm.TestsResults,
 				RepoGitUrl = hm.RepoGitUrl,
-				AttempsCount = hm.AttemptsCount
+				AttempsCount = hm.AttemptsCount,
+				TestsMark = hm.TestsMark
 			}).ToList();
 
 			var indexModel = new HomeWorkIndexViewModel()

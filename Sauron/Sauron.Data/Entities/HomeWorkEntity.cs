@@ -32,5 +32,7 @@ namespace Sauron.Data.Entities
 		public string RepoGitUrl { get; set; }
 
 		public int AttemptsCount { get; set; }
+
+		public int TestsMark { get; set; }
 	}
 }

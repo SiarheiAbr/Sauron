@@ -44,8 +44,8 @@ namespace Sauron.Services.Processing.TestRunner
 
 					nodesToRemove.AddRange(new List<XmlNode>()
 					{
-						this.FindNode(doc.ChildNodes, "settings"),
-						this.FindNode(doc.ChildNodes, "environment")
+						XmlHelper.FindNode(doc.ChildNodes, "settings"),
+						XmlHelper.FindNode(doc.ChildNodes, "environment")
 					});
 
 					foreach (var node in nodesToRemove)
@@ -67,31 +67,6 @@ namespace Sauron.Services.Processing.TestRunner
 		{
 			var loggedReport = report;
 			////throw new NotImplementedException();
-		}
-
-		private XmlNode FindNode(XmlNodeList list, string nodeName)
-		{
-			if (list.Count > 0)
-			{
-				foreach (XmlNode node in list)
-				{
-					if (node.Name.Equals(nodeName))
-					{
-						return node;
-					}
-
-					if (node.HasChildNodes)
-					{
-						XmlNode nodeFound = FindNode(node.ChildNodes, nodeName);
-						if (nodeFound != null)
-						{
-							return nodeFound;
-						}
-					}
-				}
-			}
-
-			return null;
 		}
 	}
 }
