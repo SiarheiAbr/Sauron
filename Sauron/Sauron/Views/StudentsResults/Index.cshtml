@@ -8,6 +8,7 @@
 		<tr>
 			<th scope="col">Student Name</th>
 			<th scope="col">Submitted Home Works</th>
+			<th scope="col">Total Score</th>
 			<th scope="col">View Home Works Details</th>
 		</tr>
 	</thead>
@@ -20,6 +21,9 @@
 				</td>
 				<td>
 					@student.SubmittedHomeWorks
+				</td>
+				<td>
+					@student.TotalScore
 				</td>
 				<td>
 					@Html.ActionLink("Details", "StudentResults", "StudentsResults",

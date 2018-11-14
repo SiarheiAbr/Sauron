@@ -56,6 +56,7 @@ namespace Sauron.Services.Processing
 			await AsyncProcessRunnerHelper.RunProcessAsync(reportGenerator, arguments);
 
 			var reportHtml = File.ReadAllText(testsResultsHtmlPath);
+			reportHtml = reportHtml.Replace(testsResultsXmlPath, string.Empty);
 
 			DirectoryHelper.CleanDirectory(testReportFolderPath);
 			DirectoryHelper.DeleteDirectory(testReportFolderPath);

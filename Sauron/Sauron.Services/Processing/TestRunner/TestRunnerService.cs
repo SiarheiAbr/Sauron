@@ -18,10 +18,11 @@ namespace Sauron.Services.Processing.TestRunner
 		public async Task<string> RunUnitTests(long repositoryId, Guid taskId)
 		{
 			var localRepositoryInfo = this.repositoryService.GetLocalRepositoryInfo(repositoryId, taskId);
-
+			
 			TestResults testResultsParams = new TestResults()
 			{
-				ProjectDllPath = localRepositoryInfo.ProjectDllPath
+				ProjectDllPath = localRepositoryInfo.ProjectDllPath,
+				SolutionFolderPath = localRepositoryInfo.SolutionFolderPath.Replace("\\\\", "\\")
 			};
 
 			using (var isolatedRunner = new IsolatedWorkExecutor<TestRunner>())

@@ -30,7 +30,8 @@ namespace Sauron.Controllers
 				{
 					Name = x.Name,
 					UserId = x.UserId,
-					SubmittedHomeWorks = x.SubmittedHomeWorks
+					SubmittedHomeWorks = x.SubmittedHomeWorks,
+					TotalScore = x.TotalScore
 				}).ToList();
 
 			var indexViewModel = new StudentsResultsIndexViewModel()

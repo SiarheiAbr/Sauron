@@ -58,7 +58,7 @@ namespace Sauron.Services.Processing.TestRunner
 					throw new InvalidDataException("Invalid format of tests results xml");
 				}
 
-				results.Results = doc.InnerXml;
+				results.Results = doc.InnerXml.Replace(results.SolutionFolderPath, string.Empty);
 				results.SetResult();
 			}
 		}

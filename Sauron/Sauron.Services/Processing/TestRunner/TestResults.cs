@@ -11,6 +11,8 @@ namespace Sauron.Services.Processing.TestRunner
 
 		public string ProjectDllPath { get; set; }
 
+		public string SolutionFolderPath { get; set; }
+
 		public Task<string> Task => marshalCompletionSource.Task;
 
 		public void SetResult()

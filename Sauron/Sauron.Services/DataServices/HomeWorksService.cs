@@ -26,7 +26,8 @@ namespace Sauron.Services.DataServices
 			{
 				Name = x.Name,
 				UserId = x.UserId,
-				SubmittedHomeWorks = x.SubmittedHomeWorks
+				SubmittedHomeWorks = x.SubmittedHomeWorks,
+				TotalScore = x.TotalScore
 			}).ToList();
 
 			return studentsInfoModels;

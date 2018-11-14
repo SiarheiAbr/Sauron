@@ -33,8 +33,9 @@ namespace Sauron.Data.Repositories
 			{
 				Name = g.UserName,
 				UserId = g.Id,
-				SubmittedHomeWorks = g.HoweWorks.Count
-			}).ToListAsync();
+				SubmittedHomeWorks = g.HoweWorks.Count,
+				TotalScore = g.HoweWorks.Sum(x => x.TestsMark)
+			}).OrderByDescending(x => x.TotalScore).ToListAsync();
 
 			return studentsInfo;
 		}
