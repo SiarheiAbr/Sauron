@@ -1,6 +1,8 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using System.Web.Mvc;
+using AutoMapper;
 using Sauron.Identity.Services;
 using Sauron.Services.DataServices;
 using Sauron.ViewModels;
@@ -25,14 +27,7 @@ namespace Sauron.Controllers
 		{
 			var studentsInfoModels = await this.homeWorksService.GetStudentsInfo();
 
-			var studentsInfoViewModels = studentsInfoModels
-				.Select(x => new StudentViewModel()
-				{
-					Name = x.Name,
-					UserId = x.UserId,
-					SubmittedHomeWorks = x.SubmittedHomeWorks,
-					TotalScore = x.TotalScore
-				}).ToList();
+			var studentsInfoViewModels = Mapper.Map<IList<StudentViewModel>>(studentsInfoModels);
 
 			var indexViewModel = new StudentsResultsIndexViewModel()
 			{
@@ -54,19 +49,7 @@ namespace Sauron.Controllers
 				SubmittedHomeWorks = homeWorks.Count
 			};
 
-			var homeWorksModels = homeWorks.Select(hm => new HomeWorkViewModel()
-			{
-				Id = hm.Id,
-				TaskId = hm.TaskId,
-				UserId = hm.UserId,
-				TaskName = hm.TaskName,
-				TaskGitUrl = hm.TaskGitUrl,
-				IsBuildSuccessful = hm.IsBuildSuccessful,
-				TestsResults = hm.TestsResults,
-				RepoGitUrl = hm.RepoGitUrl,
-				AttempsCount = hm.AttemptsCount,
-				TestsMark = hm.TestsMark
-			}).ToList();
+			var homeWorksModels = Mapper.Map<IList<HomeWorkViewModel>>(homeWorks);
 
 			var resultModel = new StudentResultsViewModel()
 			{

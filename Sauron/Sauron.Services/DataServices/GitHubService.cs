@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using AutoMapper;
 using NUnit.Framework.Constraints;
 using Sauron.Data.DataProviders;
 using Sauron.Identity.Services;
@@ -35,13 +36,7 @@ namespace Sauron.Services.DataServices
 			{
 				var repositories = await this.gitHubDataProvider.GetUserRepositories(accessToken);
 
-				resultList = repositories.Select(x => new GitHubRepositoryModel()
-				{
-					Name = x.Name,
-					Url = x.Url,
-					GitUrl = x.GitUrl,
-					Id = x.Id
-				}).ToList();
+				resultList = Mapper.Map<List<GitHubRepositoryModel>>(repositories);
 			}
 			catch (Exception e)
 			{
@@ -97,13 +92,7 @@ namespace Sauron.Services.DataServices
 			{
 				var entity = await this.gitHubDataProvider.GetRepository(repositoryId, accessToken);
 				
-				result = new GitHubRepositoryModel()
-				{
-					Name = entity.Name,
-					Url = entity.Url,
-					GitUrl = entity.GitUrl,
-					Id = entity.Id
-				};
+				result = Mapper.Map<GitHubRepositoryModel>(entity);
 			}
 			catch (Exception e)
 			{

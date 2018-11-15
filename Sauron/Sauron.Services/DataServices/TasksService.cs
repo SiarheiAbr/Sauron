@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using AutoMapper;
 using Sauron.Data.Entities;
 using Sauron.Data.Repositories;
 using Sauron.Services.Helpers;
@@ -37,15 +38,11 @@ namespace Sauron.Services.DataServices
 			{
 				var attemptsCountExists = homeWorksDictionary.TryGetValue(entity.Id, out var attemptsCount);
 
-				return new TaskModel()
-				{
-					Id = entity.Id,
-					Name = entity.Name,
-					GitHubUrl = entity.GitHubUrl,
-					TestsFileName = entity.TestsFileName,
-					HiddenTestsUploaded = entity.HiddenTestsUploaded,
-					AttemptsCount = attemptsCountExists ? attemptsCount : 0
-				};
+				var taskModel = Mapper.Map<TaskModel>(entity);
+
+				taskModel.AttemptsCount = attemptsCountExists ? attemptsCount : 0;
+
+				return taskModel;
 			}).ToList();
 
 			return tasksModels;
@@ -55,14 +52,7 @@ namespace Sauron.Services.DataServices
 		{
 			var tasksEntities = await this.tasksRepository.GetAvailableTasks();
 
-			var tasksModels = tasksEntities.Select(entity => new TaskModel()
-			{
-				Id = entity.Id,
-				Name = entity.Name,
-				GitHubUrl = entity.GitHubUrl,
-				TestsFileName = entity.TestsFileName,
-				HiddenTestsUploaded = entity.HiddenTestsUploaded
-			}).ToList();
+			var tasksModels = Mapper.Map<IList<TaskModel>>(tasksEntities);
 
 			return tasksModels;
 		}
@@ -73,14 +63,7 @@ namespace Sauron.Services.DataServices
 
 			if (entity != null)
 			{
-				return new TaskModel()
-				{
-					Id = entity.Id,
-					Name = entity.Name,
-					GitHubUrl = entity.GitHubUrl,
-					TestsFileName = entity.TestsFileName,
-					HiddenTestsUploaded = entity.HiddenTestsUploaded
-				};
+				return Mapper.Map<TaskModel>(entity);
 			}
 
 			return null;
@@ -88,13 +71,7 @@ namespace Sauron.Services.DataServices
 
 		public async Task CreateTask(TaskModel taskModel)
 		{
-			var entity = new TaskEntity()
-			{
-				Name = taskModel.Name,
-				GitHubUrl = taskModel.GitHubUrl,
-				TestsFileName = taskModel.TestsFileName,
-				HiddenTestsUploaded = taskModel.HiddenTestsUploaded
-			};
+			var entity = Mapper.Map<TaskEntity>(taskModel);
 
 			await this.tasksRepository.CreateTask(entity);
 
@@ -103,14 +80,7 @@ namespace Sauron.Services.DataServices
 
 		public async Task EditTask(TaskModel taskModel)
 		{
-			var entity = new TaskEntity()
-			{
-				Id = taskModel.Id,
-				Name = taskModel.Name,
-				GitHubUrl = taskModel.GitHubUrl,
-				TestsFileName = taskModel.TestsFileName,
-				HiddenTestsUploaded = taskModel.HiddenTestsUploaded
-			};
+			var entity = Mapper.Map<TaskEntity>(taskModel);
 
 			await this.tasksRepository.EditTask(entity);
 

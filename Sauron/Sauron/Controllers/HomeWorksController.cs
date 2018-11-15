@@ -1,8 +1,10 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Web.Mvc;
 using System.Web.UI.WebControls;
+using AutoMapper;
 using Microsoft.AspNet.Identity;
 using Sauron.Common;
 using Sauron.Common.Static;
@@ -30,19 +32,7 @@ namespace Sauron.Controllers
 		{
 			var homeWorks = await this.homeWorksService.GetHomeWorks(User.Identity.GetUserId());
 
-			var models = homeWorks.Select(hm => new HomeWorkViewModel()
-			{
-				Id = hm.Id,
-				TaskId = hm.TaskId,
-				UserId = hm.UserId,
-				TaskName = hm.TaskName,
-				TaskGitUrl = hm.TaskGitUrl,
-				IsBuildSuccessful = hm.IsBuildSuccessful,
-				TestsResults = hm.TestsResults,
-				RepoGitUrl = hm.RepoGitUrl,
-				AttempsCount = hm.AttemptsCount,
-				TestsMark = hm.TestsMark
-			}).ToList();
+			var models = Mapper.Map<IList<HomeWorkViewModel>>(homeWorks);
 
 			var indexModel = new HomeWorkIndexViewModel()
 			{

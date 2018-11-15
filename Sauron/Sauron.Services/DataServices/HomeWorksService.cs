@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using AutoMapper;
 using Sauron.Data.Entities;
 using Sauron.Data.Repositories;
 using Sauron.Services.Models;
@@ -22,13 +23,7 @@ namespace Sauron.Services.DataServices
 		{
 			var studentsInfoEntities = await this.homeWorksRepository.GetStudentsInfo();
 
-			var studentsInfoModels = studentsInfoEntities.Select(x => new StudentModel()
-			{
-				Name = x.Name,
-				UserId = x.UserId,
-				SubmittedHomeWorks = x.SubmittedHomeWorks,
-				TotalScore = x.TotalScore
-			}).ToList();
+			var studentsInfoModels = Mapper.Map<IList<StudentModel>>(studentsInfoEntities);
 
 			return studentsInfoModels;
 		}
@@ -37,19 +32,7 @@ namespace Sauron.Services.DataServices
 		{
 			var entities = await this.homeWorksRepository.GetHomeWorks(userId);
 
-			var models = entities.Select(hm => new HomeWorkModel()
-			{
-				Id = hm.Id,
-				TaskId = hm.TaskId,
-				UserId = hm.UserId,
-				IsBuildSuccessful = hm.IsBuildSuccessful,
-				TestsResults = hm.TestsResults,
-				TaskName = hm.Task.Name,
-				TaskGitUrl = hm.Task.GitHubUrl,
-				RepoGitUrl = hm.RepoGitUrl,
-				AttemptsCount = hm.AttemptsCount,
-				TestsMark = hm.TestsMark
-			}).ToList();
+			var models = Mapper.Map<IList<HomeWorkModel>>(entities);
 
 			return models;
 		}
@@ -58,19 +41,7 @@ namespace Sauron.Services.DataServices
 		{
 			var entity = await this.homeWorksRepository.GetHomeWork(homeWorkId);
 
-			var model = new HomeWorkModel()
-			{
-				Id = entity.Id,
-				TaskId = entity.TaskId,
-				UserId = entity.UserId,
-				IsBuildSuccessful = entity.IsBuildSuccessful,
-				TestsResults = entity.TestsResults,
-				TaskName = entity.Task.Name,
-				TaskGitUrl = entity.Task.GitHubUrl,
-				RepoGitUrl = entity.RepoGitUrl,
-				AttemptsCount = entity.AttemptsCount,
-				TestsMark = entity.TestsMark
-			};
+			var model = Mapper.Map<HomeWorkModel>(entity);
 
 			return model;
 		}
@@ -82,24 +53,7 @@ namespace Sauron.Services.DataServices
 
 		public async Task AddOrUpdateHomeWork(HomeWorkModel homeWork)
 		{
-			var homeWorkEntity = new HomeWorkEntity()
-			{
-				Id = homeWork.Id,
-
-				TaskId = homeWork.TaskId,
-
-				IsBuildSuccessful = homeWork.IsBuildSuccessful,
-
-				UserId = homeWork.UserId,
-
-				TestsResults = homeWork.TestsResults,
-
-				RepoGitUrl = homeWork.RepoGitUrl,
-
-				AttemptsCount = homeWork.AttemptsCount,
-
-				TestsMark = homeWork.TestsMark
-			};
+			var homeWorkEntity = Mapper.Map<HomeWorkEntity>(homeWork);
 
 			await this.homeWorksRepository.AddOrUpdateHomeWork(homeWorkEntity);
 		}
@@ -113,19 +67,7 @@ namespace Sauron.Services.DataServices
 				return null;
 			}
 
-			var model = new HomeWorkModel()
-			{
-				Id = entity.Id,
-				TaskId = entity.TaskId,
-				UserId = entity.UserId,
-				IsBuildSuccessful = entity.IsBuildSuccessful,
-				TestsResults = entity.TestsResults,
-				TaskName = entity.Task.Name,
-				TaskGitUrl = entity.Task.GitHubUrl,
-				RepoGitUrl = entity.RepoGitUrl,
-				AttemptsCount = entity.AttemptsCount,
-				TestsMark = entity.TestsMark
-			};
+			var model = Mapper.Map<HomeWorkModel>(entity);
 
 			return model;
 		}

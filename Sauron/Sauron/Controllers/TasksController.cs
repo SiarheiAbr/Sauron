@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
 using System.Web.Security;
+using AutoMapper;
 using Microsoft.AspNet.Identity;
 using Sauron.Services.DataServices;
 using Sauron.Services.Models;
@@ -40,21 +41,9 @@ namespace Sauron.Controllers
 				return RedirectToAction("Index", "Home");
 			}
 
-			var repoModels = userRepositories.Select(repo => new GitHubRepositoryViewModel()
-			{
-				Id = repo.Id,
-				Name = repo.Name,
-				GitUrl = repo.GitUrl,
-				Url = repo.Url
-			}).ToList();
+			var repoModels = Mapper.Map<IList<GitHubRepositoryViewModel>>(userRepositories);
 
-			var tasksModels = tasks.Select(task => new TaskViewModel()
-			{
-				Id = task.Id,
-				GitHubUrl = task.GitHubUrl,
-				Name = task.Name,
-				AttemptsCount = task.AttemptsCount
-			}).ToList();
+			var tasksModels = Mapper.Map<List<TaskViewModel>>(tasks);
 
 			var viewModel = new TasksIndexViewModel()
 			{
@@ -71,14 +60,7 @@ namespace Sauron.Controllers
 		{
 			var task = await this.tasksService.GetTask(taskId);
 
-			var viewModel = new CreateEditTaskViewModel()
-			{
-				Id = task.Id,
-				Name = task.Name,
-				GitHubUrl = task.GitHubUrl,
-				HiddenTestsUploaded = task.HiddenTestsUploaded,
-				TestsFileName = task.TestsFileName
-			};
+			var viewModel = Mapper.Map<CreateEditTaskViewModel>(task);
 
 			return View(viewModel);
 		}
@@ -140,12 +122,7 @@ namespace Sauron.Controllers
 		{
 			var tasks = await this.tasksService.GetAvailableTasks();
 
-			var tasksModels = tasks.Select(task => new TaskViewModel()
-			{
-				Id = task.Id,
-				GitHubUrl = task.GitHubUrl,
-				Name = task.Name
-			}).ToList();
+			var tasksModels = Mapper.Map<IList<TaskViewModel>>(tasks);
 
 			var viewModel = new TasksManageViewModel()
 			{
