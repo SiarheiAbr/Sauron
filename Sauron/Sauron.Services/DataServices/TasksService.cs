@@ -9,6 +9,7 @@ using Sauron.Data.Repositories;
 using Sauron.Services.Helpers;
 using Sauron.Services.Models;
 using Sauron.Services.Settings;
+using ILogger = Sauron.Common.Logger.ILogger;
 
 namespace Sauron.Services.DataServices
 {
@@ -20,11 +21,14 @@ namespace Sauron.Services.DataServices
 
 		private readonly IHomeWorksRepository homeWorksRepository;
 
-		public TasksService(ITasksRepository tasksRepository, IHomeWorksRepository homeWorksRepository, IServicesConfig config)
+		private readonly ILogger logger;
+
+		public TasksService(ITasksRepository tasksRepository, IHomeWorksRepository homeWorksRepository, IServicesConfig config, ILogger logger)
 		{
 			this.tasksRepository = tasksRepository;
 			this.config = config;
 			this.homeWorksRepository = homeWorksRepository;
+			this.logger = logger;
 		}
 
 		public async Task<IList<TaskModel>> GetAvailableTasks(string userId)
@@ -90,10 +94,10 @@ namespace Sauron.Services.DataServices
 		public async Task DeleteTask(Guid taskId)
 		{
 			var hiddenTestsPath = string.Format(this.config.HiddenTestsPathTemplate, taskId);
-			
+
 			await this.tasksRepository.DeleteTask(taskId);
 
-			DirectoryHelper.DeleteDirectory(hiddenTestsPath);
+			DirectoryHelper.DeleteDirectory(hiddenTestsPath, this.logger);
 		}
 
 		private async Task SaveHiddenTestsFile(TaskEntity entity, Stream testsFileStream)
@@ -111,7 +115,7 @@ namespace Sauron.Services.DataServices
 				}
 				else
 				{
-					DirectoryHelper.CleanDirectory(directory);
+					DirectoryHelper.CleanDirectory(directory, this.logger);
 				}
 
 				byte[] testsFileData = new byte[testsFileStream.Length];

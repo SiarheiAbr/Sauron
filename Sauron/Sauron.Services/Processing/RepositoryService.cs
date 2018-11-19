@@ -9,6 +9,7 @@ using Sauron.Services.DataServices;
 using Sauron.Services.Helpers;
 using Sauron.Services.Models;
 using Sauron.Services.Settings;
+using ILogger = Sauron.Common.Logger.ILogger;
 
 namespace Sauron.Services.Processing
 {
@@ -17,15 +18,18 @@ namespace Sauron.Services.Processing
 		private readonly IServicesConfig config;
 		private readonly IUserIdentityService userIdentityService;
 		private readonly ITasksService tasksService;
+		private readonly ILogger logger;
 
 		public RepositoryService(
 			IUserIdentityService userIdentityService,
 			IServicesConfig config,
-			ITasksService tasksService)
+			ITasksService tasksService,
+			ILogger logger)
 		{
 			this.config = config;
 			this.userIdentityService = userIdentityService;
 			this.tasksService = tasksService;
+			this.logger = logger;
 		}
 
 		public async Task ExtractRepository(long repositoryId, Guid taskId)
@@ -131,7 +135,7 @@ namespace Sauron.Services.Processing
 			}
 			else
 			{
-				DirectoryHelper.CleanDirectory(repositoryFolderPath);
+				DirectoryHelper.CleanDirectory(repositoryFolderPath, this.logger);
 			}
 
 			using (FileStream stream = File.Open(this.GetZipRepositoryPath(repositoryId, taskId), FileMode.Create, FileAccess.ReadWrite))

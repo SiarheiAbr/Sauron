@@ -1,15 +1,12 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using ILogger = Sauron.Common.Logger.ILogger;
 
 namespace Sauron.Services.Helpers
 {
 	public static class DirectoryHelper
 	{
-		public static void CleanDirectory(string directoryPath)
+		public static void CleanDirectory(string directoryPath, ILogger logger)
 		{
 			var directoryInfo = new DirectoryInfo(directoryPath);
 
@@ -27,11 +24,11 @@ namespace Sauron.Services.Helpers
 			}
 			catch (Exception e)
 			{
-				// TODO: log clean repositories errors
+				logger.Error(e);
 			}
 		}
 
-		public static void DeleteDirectory(string directoryPath)
+		public static void DeleteDirectory(string directoryPath, ILogger logger)
 		{
 			try
 			{
@@ -40,7 +37,7 @@ namespace Sauron.Services.Helpers
 			}
 			catch (Exception e)
 			{
-				// TODO: log delete directories errors
+				logger.Error(e);
 			}
 		}
 	}

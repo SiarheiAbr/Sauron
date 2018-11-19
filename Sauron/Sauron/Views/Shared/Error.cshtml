@@ -1,4 +1,5 @@
 ﻿@using Sauron.Exceptions
+@using Sauron.Services.Exceptions
 @model System.Web.Mvc.HandleErrorInfo
 
 @{
@@ -14,6 +15,11 @@ else if (Model.Exception is ForkException || Model.Exception is ApplicationExcep
 {
 	<h1 class="text-danger">Something went wrong.</h1>
 	<h2 class="text-danger">@Model.Exception.Message</h2>
+}
+else if (Model.Exception is BuildException)
+{
+	<h1 class="text-danger">Something went wrong during build.</h1>
+	<h2 class="text-danger">Please try again.</h2>
 }
 else
 {

@@ -5,9 +5,11 @@ using System.Xml;
 using Microsoft.Build.Execution;
 using Sauron.Identity.Services;
 using Sauron.Services.DataServices;
+using Sauron.Services.Exceptions;
 using Sauron.Services.Helpers;
 using Sauron.Services.Models;
 using Sauron.Services.Processing.TestRunner;
+using ILogger = Sauron.Common.Logger.ILogger;
 
 namespace Sauron.Services.Processing
 {
@@ -22,6 +24,7 @@ namespace Sauron.Services.Processing
 		private readonly IHomeWorksService homeWorksService;
 		private readonly ITasksService tasksService;
 		private readonly IUserIdentityService userIdentityService;
+		private readonly ILogger logger;
 
 		public ProcessingService(
 			IGitHubService gitHubService,
@@ -30,7 +33,8 @@ namespace Sauron.Services.Processing
 			ITestRunnerService testRunnerService,
 			IHomeWorksService homeWorksService,
 			ITasksService tasksService,
-			IUserIdentityService userIdentityService)
+			IUserIdentityService userIdentityService,
+			ILogger logger)
 		{
 			this.gitHubService = gitHubService;
 			this.repositoryService = repositoryService;
@@ -39,6 +43,7 @@ namespace Sauron.Services.Processing
 			this.homeWorksService = homeWorksService;
 			this.tasksService = tasksService;
 			this.userIdentityService = userIdentityService;
+			this.logger = logger;
 		}
 
 		public async Task<bool> IsSubmittedRepoIsForkOfTask(long repositoryId, Guid taskId)
@@ -99,18 +104,18 @@ namespace Sauron.Services.Processing
 					homeWork.TestsMark = this.CalculateMarkForHomeWork(homeWork.TestsResults);
 				}
 			}
-			catch (Exception)
+			catch (Exception e)
 			{
-				// TODO: log exception for user build
-				// TODO: save build info into database???
+				this.logger.Error($"Build Error. UserId: {userId}; RepoId: {repositoryId}, TaskId: {taskId}, Error: {e}");
+				throw new BuildException(userId, repositoryId, taskId);
 			}
 			finally
 			{
 				await this.homeWorksService.AddOrUpdateHomeWork(homeWork);
 
-				DirectoryHelper.CleanDirectory(localRepositoryInfo.RepositoryFolderPath);
+				DirectoryHelper.CleanDirectory(localRepositoryInfo.RepositoryFolderPath, this.logger);
 
-				DirectoryHelper.DeleteDirectory(localRepositoryInfo.RepositoryFolderPath);
+				DirectoryHelper.DeleteDirectory(localRepositoryInfo.RepositoryFolderPath, this.logger);
 			}
 		}
 

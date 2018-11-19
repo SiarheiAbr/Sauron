@@ -4,6 +4,7 @@ using Microsoft.Owin.Security;
 using Unity;
 using Unity.AspNet.Mvc;
 using Unity.Injection;
+using Unity.Lifetime;
 
 namespace Sauron
 {
@@ -39,6 +40,9 @@ namespace Sauron
 		/// </remarks>
 		public static void RegisterTypes(IUnityContainer container)
 		{
+			// singleton for logger
+			container.RegisterType<Sauron.Common.Logger.ILogger, Sauron.Common.Logger.Logger>(new ContainerControlledLifetimeManager());
+
 			Sauron.Services.UnityConfig.RegisterTypes(container, () => new PerRequestLifetimeManager());
 			Sauron.Identity.UnityConfig.RegisterTypes(container, () => new PerRequestLifetimeManager());
 

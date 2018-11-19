@@ -9,6 +9,7 @@ using Sauron.Services.DataServices;
 using Sauron.Services.Helpers;
 using Sauron.Services.Models;
 using Sauron.Services.Settings;
+using ILogger = Sauron.Common.Logger.ILogger;
 
 namespace Sauron.Services.Processing
 {
@@ -16,11 +17,13 @@ namespace Sauron.Services.Processing
 	{
 		private readonly IServicesConfig config;
 		private readonly IHomeWorksService homeWorksService;
+		private readonly ILogger logger;
 
-		public TestReportService(IServicesConfig config, IHomeWorksService homeWorksService)
+		public TestReportService(IServicesConfig config, IHomeWorksService homeWorksService, ILogger logger)
 		{
 			this.config = config;
 			this.homeWorksService = homeWorksService;
+			this.logger = logger;
 		}
 
 		public async Task<string> GenerateTestReportForHomeWork(string userId, Guid taskId)
@@ -42,7 +45,7 @@ namespace Sauron.Services.Processing
 			}
 			else
 			{
-				DirectoryHelper.CleanDirectory(testReportFolderPath);
+				DirectoryHelper.CleanDirectory(testReportFolderPath, this.logger);
 			}
 
 			var testsResultsXmlPath = Path.Combine(Path.Combine(testReportFolderPath), "testsResults.xml");
@@ -58,8 +61,8 @@ namespace Sauron.Services.Processing
 			var reportHtml = File.ReadAllText(testsResultsHtmlPath);
 			reportHtml = reportHtml.Replace(testsResultsXmlPath, string.Empty);
 
-			DirectoryHelper.CleanDirectory(testReportFolderPath);
-			DirectoryHelper.DeleteDirectory(testReportFolderPath);
+			DirectoryHelper.CleanDirectory(testReportFolderPath, this.logger);
+			DirectoryHelper.DeleteDirectory(testReportFolderPath, this.logger);
 
 			return reportHtml;
 		}
